@@ -1,0 +1,7 @@
+.DS_Store
+
+# SERVER
+server/node_modules
+server/.env
+server/coverage
+server/dist
