@@ -103,6 +103,8 @@ userSchema.pre('save', async function(next) {
   const oneIsMissing = !this.accounts || !this.netWorth;
   const noAccounts = this.accounts.length === 0;
 
+  if (this.netWorth === 0) next();
+
   oneIsMissing && noAccounts
     ? next(
         new TRPCError({
