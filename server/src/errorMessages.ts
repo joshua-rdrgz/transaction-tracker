@@ -1,14 +1,21 @@
 export const accountErrors = {
   noName: 'An account must have a name.  Please give it one.',
+  noBank: 'An account must have a corresponding bank.  Please give it one.',
   noBalance: 'An account must have a balance.  Please provide one.',
   balanceBelowZero:
     'The balance provided is below 0.  Please provide a balance above 0.',
+  noAccountFound:
+    'The account you requested does not exist.  Please try again.',
+  notAllowedAccess:
+    'The account you requested does not belong to you.  Please try again.',
 } as const;
 
 export const authErrors = {
   incorrectUserOrPassword: 'Incorrect email or password, please try again.',
   noCredentialsProvided:
     'Email or password was not provided.  Please provide your credentials to log in.',
+  notLoggedIn:
+    'You are not signed in and cannot access this resource.  Please log in to gain access.',
 } as const;
 
 export const categoryBucketErrors = {
@@ -67,5 +74,5 @@ export const userErrors = {
   passwordsDoNotMatch:
     'Your passwords do not match.  Please use a matching password.',
   noNetWorthInfo:
-    'User validation failed: netWorth: Either net worth or accounts is missing.  Please provide at least one of the two.',
+    'User validation failed: netWorth: Either net worth or accounts is missing.  Please provide at least one of the two., accounts: Either net worth or accounts is missing.  Please provide at least one of the two.',
 } as const;
