@@ -4,8 +4,8 @@ import { CreateExpressContextOptions } from '@trpc/server/adapters/express';
 import errorFormatter from '@/errors/errorFormatter';
 
 export interface IContext extends CreateExpressContextOptions {
-  user: {
-    id?: string;
+  user?: {
+    id: string;
   };
 }
 
@@ -13,7 +13,6 @@ export function createContext({ req, res }: CreateExpressContextOptions) {
   const ctx: IContext = {
     req,
     res,
-    user: {},
   };
 
   return ctx;
