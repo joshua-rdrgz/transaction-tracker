@@ -75,7 +75,6 @@ describe('auth Routes: /api/v1/trpc/....', () => {
 
       const email = faker.internet.email();
       const password = faker.internet.password();
-      console.log(password);
       await caller.signup({
         name: faker.person.fullName(),
         email: email,
