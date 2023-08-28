@@ -1,18 +1,21 @@
 import mongoose from 'mongoose';
-import { Request, Response } from 'express';
+import { Express, Request, Response } from 'express';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 
+import createApp from '@/app';
 import { createContext } from '@/config/trpc';
 import { appRouter } from '@/routes/appRouter';
+import { decodeToken } from '@/utils/jwt';
 
-let mongo: MongoMemoryServer | null = null;
+let app: Express;
+let mongo: MongoMemoryServer | null;
 
 const connectDB = async () => {
   mongo = await MongoMemoryServer.create();
   const uri = mongo.getUri();
 
+  app = createApp(uri);
   await mongoose.connect(uri);
-  console.log('Test DB connected!');
 };
 
 const dropDB = async () => {
@@ -35,16 +38,33 @@ const dropCollections = async () => {
   }
 };
 
-export const createMockRequest = (): Request => {
-  return {} as Request;
+export const createMockRequest = (token: string | null = null): Request => {
+  const req = {} as Request;
+  if (token) {
+    req.headers = {
+      authorization: `Bearer ${token}`,
+    };
+  }
+  return req;
 };
 
 export const createMockResponse = (): Response => {
   return {} as Response;
 };
 
-export const createCaller = (req: Request, res: Response) => {
-  return appRouter.createCaller(createContext({ req, res }));
+export const createCaller = (
+  req: Request,
+  res: Response,
+  token: string | null = null
+) => {
+  const ctx = createContext({ req, res });
+
+  if (token) {
+    const decodedToken = decodeToken(token);
+    ctx.user = { id: decodedToken.sub as string };
+  }
+
+  return appRouter.createCaller(ctx);
 };
 
 export default function setUpTestDB() {
