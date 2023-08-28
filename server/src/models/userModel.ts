@@ -7,7 +7,7 @@ import { authErrors, userErrors } from '@/errorMessages';
 import { IAccount } from '@/models/accountModel';
 
 export interface IUser {
-  id: mongoose.Schema.Types.ObjectId;
+  id: mongoose.Types.ObjectId;
   name: string;
   email: string;
   password: string;
@@ -32,7 +32,7 @@ async function validateUniqueEmail(email: string) {
   return !user;
 }
 
-const userSchema = new mongoose.Schema<IUser>({
+const userSchema = new mongoose.Schema<IUser, UserModel>({
   name: { type: String, required: [true, userErrors.noName] },
   email: {
     type: String,
