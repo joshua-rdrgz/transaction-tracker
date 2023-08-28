@@ -110,6 +110,9 @@ userSchema.pre('save', async function(next) {
         new TRPCError({
           code: 'BAD_REQUEST',
           message: userErrors.noNetWorthInfo,
+          cause: {
+            name: 'ValidationError',
+          },
         })
       )
     : next();
