@@ -16,8 +16,8 @@ const passportAuthCallback = (
   if (!user) {
     rej(
       new TRPCError({
-        code: 'BAD_REQUEST',
-        message: authErrors.noCredentialsProvided,
+        code: 'UNAUTHORIZED',
+        message: authErrors.notLoggedIn,
       })
     );
     return;
