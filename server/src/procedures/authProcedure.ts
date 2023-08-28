@@ -34,7 +34,11 @@ const isAuthenticatedMiddleware = middleware(async ({ ctx, next }) => {
       passportAuthCallback(ctx, res, rej)
     )(ctx.req, ctx.res, next)
   );
-  return next({ ctx });
+  if (ctx.user?.id) return next({ ctx: { user: ctx.user } });
+  throw new TRPCError({
+    code: 'UNAUTHORIZED',
+    message: authErrors.notLoggedIn,
+  });
 });
 
 export const authProcedure = publicProcedure.use(isAuthenticatedMiddleware);
