@@ -8,13 +8,14 @@ process.on('uncaughtException', (err) => {
 });
 
 dotenv.config();
-import app from './app';
+import createApp from './app';
 
 const DB = (process.env.DATABASE as string)
   .replace('<USERNAME>', process.env.DATABASE_USERNAME as string)
-  .replace('<PASSWORD>', process.env.DATABASE_PASSWORD as string);
+  .replace('<PASSWORD>', process.env.DATABASE_PASSWORD as string)
+  .replace('<DB_TYPE>', process.env.DATABASE_REG_TYPE as string);
 
-mongoose.connect(DB).then(() => console.log('DB connection successful!'));
+const app = createApp(DB);
 
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {
