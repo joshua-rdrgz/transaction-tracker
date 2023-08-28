@@ -3,6 +3,7 @@ import { z } from 'zod';
 import { router, publicProcedure, mergeRouters } from '@/config/trpc';
 import { authProcedure } from '@/procedures/authProcedure';
 import { authRoutes } from '@/routes/authRoutes';
+import { accountRoutes } from '@/routes/accountRoutes';
 import User from '@/models/userModel';
 
 export const baseAppRoutes = router({
@@ -10,7 +11,6 @@ export const baseAppRoutes = router({
     return 'Testing Testing 1-2-3';
   }),
   testingLog: publicProcedure.input(z.string()).query((opts) => {
-    console.log('opts: ', opts);
     return `Client says: ${opts.input}`;
   }),
   getUser: authProcedure.query(async (opts) => {
@@ -21,6 +21,7 @@ export const baseAppRoutes = router({
       data: { user },
     };
   }),
+  accounts: accountRoutes,
 });
 
 export const appRouter = mergeRouters(baseAppRoutes, authRoutes);
