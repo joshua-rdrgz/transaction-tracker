@@ -4,7 +4,6 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { trpc } from '@/config/trpc';
 
 import './index.css';
-import { useState } from 'react';
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -14,24 +13,15 @@ const queryClient = new QueryClient({
   },
 });
 
-const token = 'fake_token';
+const trpcClient = trpc.createClient({
+  links: [
+    httpBatchLink({
+      url: 'http://localhost:3000/api/v1/trpc',
+    }),
+  ],
+});
 
 function App() {
-  const [trpcClient] = useState(() =>
-    trpc.createClient({
-      links: [
-        httpBatchLink({
-          url: 'http://localhost:3000/api/v1/trpc',
-          async headers() {
-            return {
-              authorization: `Bearer ${token}`,
-            };
-          },
-        }),
-      ],
-    })
-  );
-
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
