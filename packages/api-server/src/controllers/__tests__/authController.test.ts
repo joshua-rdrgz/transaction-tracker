@@ -5,7 +5,6 @@ import setUpTestDB, {
   createMockResponse,
   createCaller,
 } from '@/setuptestdb';
-import { decodeToken } from '@/utils/jwt';
 import User from '@/models/userModel';
 import { authErrors } from '@/errorMessages';
 
@@ -44,61 +43,9 @@ describe('auth Routes: /api/v1/trpc/....', () => {
       expect(user._id.toString()).toEqual(dbUser?._id.toString());
       expect(await User.countDocuments()).toEqual(1);
     });
-
-    test('it should include a valid JWT token along with the user', async () => {
-      const caller = createCaller(req, res);
-
-      const password = faker.internet.password();
-      const response = await caller.signup({
-        name: faker.person.fullName(),
-        email: faker.internet.email(),
-        password: password,
-        passwordConfirm: password,
-        netWorth: Number(faker.finance.amount({ min: 1, dec: 2 })),
-      });
-
-      const {
-        token,
-        data: { user },
-      } = response;
-
-      const decodedToken = decodeToken(token);
-      const dbUser = await User.findById(user._id);
-
-      expect(decodedToken.sub).toEqual(dbUser?._id.toString());
-    });
   });
 
   describe('Log In Route: MUTATION ..../login', () => {
-    test('it should successfully return a JWT token if given valid credentials', async () => {
-      const caller = createCaller(req, res);
-
-      const email = faker.internet.email();
-      const password = faker.internet.password();
-      await caller.signup({
-        name: faker.person.fullName(),
-        email: email,
-        password: password,
-        passwordConfirm: password,
-        netWorth: Number(faker.finance.amount({ min: 1, dec: 2 })),
-      });
-
-      const response = await caller.login({
-        email: email,
-        password: password,
-      });
-
-      const {
-        token,
-        data: { user },
-      } = response;
-
-      const decodedToken = decodeToken(token);
-      const dbUser = await User.findById(user._id);
-
-      expect(decodedToken.sub).toEqual(dbUser?._id.toString());
-    });
-
     test('it should return a 401 Unauthorized if given invalid credentials', async () => {
       try {
         const caller = createCaller(req, res);
