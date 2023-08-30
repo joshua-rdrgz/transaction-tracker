@@ -18,7 +18,12 @@ module.exports = {
       '@': path.resolve(__dirname, 'src'),
     },
   },
-  externals: [nodeExternals()],
+  externals: [
+    nodeExternals(),
+    nodeExternals({
+      modulesDir: path.resolve(__dirname, '../../node_modules'),
+    }),
+  ],
   module: {
     rules: [
       {

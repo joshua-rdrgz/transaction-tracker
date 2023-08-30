@@ -78,5 +78,3 @@ export default function(db: string) {
 
   return app;
 }
-
-export type AppRouter = typeof appRouter;

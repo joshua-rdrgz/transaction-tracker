@@ -25,3 +25,4 @@ export const baseAppRoutes = router({
 });
 
 export const appRouter = mergeRouters(baseAppRoutes, authRoutes);
+export type AppRouter = typeof appRouter;

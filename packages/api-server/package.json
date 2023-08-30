@@ -1,8 +1,8 @@
 {
-  "name": "budgetbook-server",
+  "name": "api-server",
   "version": "1.0.0",
   "description": "Express server for BudgetBook",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "type": "module",
   "scripts": {
     "build": "webpack",

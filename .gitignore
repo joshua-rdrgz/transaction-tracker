@@ -1,7 +1,36 @@
 .DS_Store
 
+node_modules
+
 # SERVER
-server/node_modules
-server/.env
-server/coverage
-server/dist
+packages/api-server/node_modules
+packages/api-server/.env
+packages/api-server/coverage
+packages/api-server/dist
+
+# CLIENT
+packages/client/node_modules
+packages/client/.env
+packages/client/dist
+packages/client/dist-ssr
+packages/client/*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
