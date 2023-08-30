@@ -1,12 +1,14 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 
-import { publicProcedure } from '@/config/trpc';
+import { IContext, publicProcedure } from '@/config/trpc';
 import { signToken } from '@/utils/jwt';
 import User, { UserDoc } from '@/models/userModel';
 import { authErrors } from '@/errorMessages';
 
-const sendAuthResponse = (user: UserDoc) => {
+const TWO_WEEKS_IN_MS = 1000 * 60 * 60 * 24 * 7 * 2;
+
+const sendAuthResponse = (user: UserDoc, ctx: IContext) => {
   const token = signToken(user._id.toString());
 
   // Manually set password to undefined so it doesn't get through the output.
@@ -14,9 +16,15 @@ const sendAuthResponse = (user: UserDoc) => {
   // @ts-ignore
   user.password = undefined;
 
+  ctx.res.cookie('jwtToken', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    maxAge: TWO_WEEKS_IN_MS,
+    domain: process.env.CLIENT_DOMAIN as string,
+  });
+
   return {
     status: 'success',
-    token,
     data: { user },
   };
 };
@@ -34,9 +42,9 @@ const signup = publicProcedure
     })
   )
   .mutation(async (opts) => {
-    const { input } = opts;
+    const { ctx, input } = opts;
     const newUser = await User.create(input);
-    return sendAuthResponse(newUser);
+    return sendAuthResponse(newUser, ctx);
   });
 
 const login = publicProcedure
@@ -47,7 +55,7 @@ const login = publicProcedure
     })
   )
   .mutation(async (opts) => {
-    const { input } = opts;
+    const { ctx, input } = opts;
     const user = await User.findOne({ email: input.email }).select('+password');
 
     if (
@@ -63,7 +71,7 @@ const login = publicProcedure
       });
     }
 
-    return sendAuthResponse(user);
+    return sendAuthResponse(user, ctx);
   });
 
 export default {
