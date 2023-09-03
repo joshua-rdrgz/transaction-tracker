@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
+import zodSchemas from 'shared-zod-schemas';
 
 import { accountErrors } from '@/errorMessages';
 import { authProcedure } from '@/procedures/authProcedure';
@@ -7,13 +7,7 @@ import User from '@/models/userModel';
 import Account, { AccountDoc } from '@/models/accountModel';
 
 const createAccount = authProcedure
-  .input(
-    z.object({
-      name: z.string(),
-      bank: z.string(),
-      balance: z.number(),
-    })
-  )
+  .input(zodSchemas.accountRouteSchemas.createAccount)
   .mutation(async (opts) => {
     const { ctx, input } = opts;
     const user = await User.findById(ctx.user.id);
@@ -57,43 +51,36 @@ const readAccounts = authProcedure.query(async ({ ctx }) => {
   };
 });
 
-const readAccount = authProcedure.input(z.string()).query(async (opts) => {
-  const { ctx, input: accountId } = opts;
-  const user = await User.findById(ctx.user.id);
-  const account = await Account.findById(accountId);
+const readAccount = authProcedure
+  .input(zodSchemas.accountRouteSchemas.readAccount)
+  .query(async (opts) => {
+    const { ctx, input: accountId } = opts;
+    const user = await User.findById(ctx.user.id);
+    const account = await Account.findById(accountId);
 
-  if (!account)
-    throw new TRPCError({
-      code: 'BAD_REQUEST',
-      message: accountErrors.noAccountFound,
-    });
+    if (!account)
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: accountErrors.noAccountFound,
+      });
 
-  if (!user?.accounts.includes(account._id))
-    throw new TRPCError({
-      code: 'UNAUTHORIZED',
-      message: accountErrors.notAllowedAccess,
-    });
+    if (!user?.accounts.includes(account._id))
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: accountErrors.notAllowedAccess,
+      });
 
-  return {
-    status: 'success',
-    userId: ctx.user.id,
-    data: {
-      account,
-    },
-  };
-});
+    return {
+      status: 'success',
+      userId: ctx.user.id,
+      data: {
+        account,
+      },
+    };
+  });
 
 const updateAccount = authProcedure
-  .input(
-    z.object({
-      accountId: z.string(),
-      data: z.object({
-        name: z.string().optional(),
-        bank: z.string().optional(),
-        balance: z.number().optional(),
-      }),
-    })
-  )
+  .input(zodSchemas.accountRouteSchemas.updateAccount)
   .mutation(async (opts) => {
     const {
       ctx,
@@ -127,44 +114,46 @@ const updateAccount = authProcedure
     };
   });
 
-const deleteAccount = authProcedure.input(z.string()).mutation(async (opts) => {
-  const { ctx, input } = opts;
+const deleteAccount = authProcedure
+  .input(zodSchemas.accountRouteSchemas.deleteAccount)
+  .mutation(async (opts) => {
+    const { ctx, input } = opts;
 
-  const user = await User.findById(ctx.user.id);
-  const accountProvided = await Account.findById(input);
+    const user = await User.findById(ctx.user.id);
+    const accountProvided = await Account.findById(input);
 
-  if (!accountProvided)
-    throw new TRPCError({
-      code: 'BAD_REQUEST',
-      message: accountErrors.noAccountFound,
-    });
+    if (!accountProvided)
+      throw new TRPCError({
+        code: 'BAD_REQUEST',
+        message: accountErrors.noAccountFound,
+      });
 
-  if (!user?.accounts.includes(accountProvided._id))
-    throw new TRPCError({
-      code: 'UNAUTHORIZED',
-      message: accountErrors.notAllowedAccess,
-    });
+    if (!user?.accounts.includes(accountProvided._id))
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: accountErrors.notAllowedAccess,
+      });
 
-  if (user.accounts.length === 1) {
-    console.log('FROM ROUTE: user only has 1 account!');
-    user.netWorth = accountProvided.balance;
+    if (user.accounts.length === 1) {
+      console.log('FROM ROUTE: user only has 1 account!');
+      user.netWorth = accountProvided.balance;
+      await user.save({ validateModifiedOnly: true });
+    }
+
+    await Account.findByIdAndDelete(accountProvided._id);
+    user.accounts = user.accounts.filter(
+      (accountId) => accountId.toString() !== accountProvided._id.toString()
+    );
     await user.save({ validateModifiedOnly: true });
-  }
 
-  await Account.findByIdAndDelete(accountProvided._id);
-  user.accounts = user.accounts.filter(
-    (accountId) => accountId.toString() !== accountProvided._id.toString()
-  );
-  await user.save({ validateModifiedOnly: true });
-
-  return {
-    status: 'success',
-    userId: ctx.user.id,
-    data: {
-      account: null,
-    },
-  };
-});
+    return {
+      status: 'success',
+      userId: ctx.user.id,
+      data: {
+        account: null,
+      },
+    };
+  });
 
 export default {
   createAccount,

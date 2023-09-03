@@ -1,5 +1,5 @@
-import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
+import zodSchemas from 'shared-zod-schemas';
 
 import { IContext, publicProcedure } from '@/config/trpc';
 import { signToken } from '@/utils/jwt';
@@ -30,17 +30,7 @@ const sendAuthResponse = (user: UserDoc, ctx: IContext) => {
 };
 
 const signup = publicProcedure
-  .input(
-    z.object({
-      name: z.string(),
-      email: z.string(),
-      password: z.string(),
-      passwordConfirm: z.string().optional(),
-      avatar: z.string().optional(),
-      netWorth: z.number().optional(),
-      accounts: z.array(z.string()).optional(),
-    })
-  )
+  .input(zodSchemas.authRouteSchemas.signup)
   .mutation(async (opts) => {
     const { ctx, input } = opts;
     const newUser = await User.create(input);
@@ -48,12 +38,7 @@ const signup = publicProcedure
   });
 
 const login = publicProcedure
-  .input(
-    z.object({
-      email: z.string().optional(),
-      password: z.string().optional(),
-    })
-  )
+  .input(zodSchemas.authRouteSchemas.login)
   .mutation(async (opts) => {
     const { ctx, input } = opts;
     const user = await User.findOne({ email: input.email }).select('+password');

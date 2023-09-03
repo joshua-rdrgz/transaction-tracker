@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-import { router, publicProcedure, mergeRouters } from '@/config/trpc';
+import { router, publicProcedure, mergeRouters } from '../config/trpc';
 import { authProcedure } from '@/procedures/authProcedure';
 import { authRoutes } from '@/routes/authRoutes';
 import { accountRoutes } from '@/routes/accountRoutes';

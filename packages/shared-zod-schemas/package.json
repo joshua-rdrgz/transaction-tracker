@@ -1,0 +1,14 @@
+{
+  "name": "shared-zod-schemas",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc -build"
+  },
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  },
+  "dependencies": {
+    "zod": "^3.22.2"
+  }
+}

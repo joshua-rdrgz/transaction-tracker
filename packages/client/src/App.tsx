@@ -1,7 +1,11 @@
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
 import { trpc } from '@/config/trpc';
+
+import Signup from '@/pages/Signup';
 
 import './index.css';
 
@@ -36,9 +40,12 @@ function App() {
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools initialIsOpen={false} />
-        <h1 className='bg-red-800 text-blue-50 text-2xl'>
-          Testing application!
-        </h1>
+
+        <BrowserRouter>
+          <Routes>
+            <Route path='signup' element={<Signup />} />
+          </Routes>
+        </BrowserRouter>
       </QueryClientProvider>
     </trpc.Provider>
   );

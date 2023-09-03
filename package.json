@@ -7,10 +7,12 @@
   "scripts": {
     "start": "npm run start:client & npm run start:api-server",
     "start:client": "npm run dev --workspace=client",
-    "start:api-server": "npm start --workspace=api-server"
+    "start:api-server": "npm start --workspace=api-server",
+    "update:shared-zod-schemas": "npm run build --workspace=shared-zod-schemas & npm update shared-zod-schemas --workspace=api-server --workspace=client"
   },
   "workspaces": [
     "./packages/api-server",
-    "./packages/client"
+    "./packages/client",
+    "./packages/shared-zod-schemas"
   ]
 }
