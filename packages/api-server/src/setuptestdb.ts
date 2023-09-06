@@ -49,7 +49,11 @@ export const createMockRequest = (token: string | null = null): Request => {
 };
 
 export const createMockResponse = (): Response => {
-  return {} as Response;
+  const mockResponse: Partial<Response> = {};
+
+  mockResponse.cookie = jest.fn();
+
+  return mockResponse as Response;
 };
 
 export const createCaller = (
