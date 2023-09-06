@@ -4,7 +4,6 @@ import bcrypt from 'bcryptjs';
 import { TRPCError } from '@trpc/server';
 
 import { authErrors, userErrors } from '@/errorMessages';
-import { IAccount } from '@/models/accountModel';
 
 export interface IUser {
   id: mongoose.Types.ObjectId;
@@ -13,11 +12,9 @@ export interface IUser {
   password: string;
   passwordConfirm?: string;
   avatar?: string;
-  netWorth?: number;
-  accounts: IAccount['id'][];
 }
 
-interface IUserMethods {
+export interface IUserMethods {
   verifyCorrectPassword(
     passwordReceived: string,
     passwordActual: string
@@ -72,13 +69,6 @@ const userSchema = new mongoose.Schema<IUser, UserModel>({
     },
   },
   avatar: String,
-  netWorth: Number,
-  accounts: [
-    {
-      type: mongoose.Schema.ObjectId,
-      ref: 'Account',
-    },
-  ],
 });
 
 /**
@@ -94,28 +84,6 @@ userSchema.pre('save', async function(next) {
   this.passwordConfirm = undefined;
 
   next();
-});
-
-/**
- * Check to make sure either net worth or accounts were provided
- */
-userSchema.pre('save', async function(next) {
-  const oneIsMissing = !this.accounts || !this.netWorth;
-  const noAccounts = this.accounts.length === 0;
-
-  if (this.netWorth === 0) next();
-
-  oneIsMissing && noAccounts
-    ? next(
-        new TRPCError({
-          code: 'BAD_REQUEST',
-          message: userErrors.noNetWorthInfo,
-          cause: {
-            name: 'ValidationError',
-          },
-        })
-      )
-    : next();
 });
 
 /**

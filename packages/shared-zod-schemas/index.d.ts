@@ -1,62 +1,36 @@
 import { z } from 'zod';
 declare const _default: {
     authRouteSchemas: {
-        signup: z.ZodEffects<z.ZodEffects<z.ZodObject<{
+        signup: z.ZodEffects<z.ZodObject<{
             name: z.ZodString;
             email: z.ZodString;
             password: z.ZodString;
             passwordConfirm: z.ZodString;
             avatar: z.ZodOptional<z.ZodString>;
-            netWorth: z.ZodOptional<z.ZodUnion<[z.ZodEffects<z.ZodLiteral<"">, undefined, "">, z.ZodNumber]>>;
-            accounts: z.ZodOptional<z.ZodNullable<z.ZodArray<z.ZodString, "many">>>;
         }, "strip", z.ZodTypeAny, {
             name: string;
             email: string;
             password: string;
             passwordConfirm: string;
             avatar?: string | undefined;
-            netWorth?: number | undefined;
-            accounts?: string[] | null | undefined;
         }, {
             name: string;
             email: string;
             password: string;
             passwordConfirm: string;
             avatar?: string | undefined;
-            netWorth?: number | "" | undefined;
-            accounts?: string[] | null | undefined;
         }>, {
             name: string;
             email: string;
             password: string;
             passwordConfirm: string;
             avatar?: string | undefined;
-            netWorth?: number | undefined;
-            accounts?: string[] | null | undefined;
         }, {
             name: string;
             email: string;
             password: string;
             passwordConfirm: string;
             avatar?: string | undefined;
-            netWorth?: number | "" | undefined;
-            accounts?: string[] | null | undefined;
-        }>, {
-            name: string;
-            email: string;
-            password: string;
-            passwordConfirm: string;
-            avatar?: string | undefined;
-            netWorth?: number | undefined;
-            accounts?: string[] | null | undefined;
-        }, {
-            name: string;
-            email: string;
-            password: string;
-            passwordConfirm: string;
-            avatar?: string | undefined;
-            netWorth?: number | "" | undefined;
-            accounts?: string[] | null | undefined;
         }>;
         login: z.ZodObject<{
             email: z.ZodString;

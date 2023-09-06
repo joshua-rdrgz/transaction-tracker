@@ -19,36 +19,14 @@ exports.default = {
                 .nonempty('Password Confirm is required.')
                 .min(8, 'Password must be at least 8 characters.'),
             avatar: zod_1.z.string().optional(),
-            netWorth: zod_1.z
-                .literal('')
-                .transform(() => undefined)
-                .or(zod_1.z.coerce.number())
-                .optional(),
-            accounts: zod_1.z.array(zod_1.z.string()).nullish(),
         })
             .refine((schema) => schema.password === schema.passwordConfirm, {
             message: 'Password and Confirm Password must match.',
             path: ['passwordConfirm'],
-        })
-            .superRefine((schema, ctx) => {
-            const accountCheck = schema.accounts && schema.accounts.length !== 0;
-            const netWorthCheck = typeof schema.netWorth !== 'number';
-            if (netWorthCheck || accountCheck) {
-                ctx.addIssue({
-                    code: zod_1.z.ZodIssueCode.custom,
-                    message: 'Either net worth or accounts must be provided.  Please provide one of the two.',
-                    path: ['netWorth'],
-                });
-                ctx.addIssue({
-                    code: zod_1.z.ZodIssueCode.custom,
-                    message: 'Either net worth or accounts must be provided.  Please provide one of the two.',
-                    path: ['accounts'],
-                });
-            }
         }),
         login: zod_1.z.object({
-            email: zod_1.z.string().nonempty('Email is required.'),
-            password: zod_1.z.string().nonempty('Password is required.'),
+            email: zod_1.z.string().optional(),
+            password: zod_1.z.string().optional(),
         }),
     },
     accountRouteSchemas: {

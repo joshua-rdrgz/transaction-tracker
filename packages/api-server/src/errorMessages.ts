@@ -1,4 +1,5 @@
 export const accountErrors = {
+  noAssociatedUser: 'An account must be associated with a user.',
   noName: 'An account must have a name.  Please give it one.',
   noBank: 'An account must have a corresponding bank.  Please give it one.',
   noBalance: 'An account must have a balance.  Please provide one.',

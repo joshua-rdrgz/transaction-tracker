@@ -6,16 +6,19 @@ import setUpTestDB, {
   createCaller,
 } from '@/setuptestdb';
 
-import { createUser } from '@/utils/testUtils';
+import { createUser, createAccounts } from '@/utils/testUtils';
 import { accountErrors } from '@/errorMessages';
 import Account, { IAccount } from '@/models/accountModel';
 import User, { UserDoc } from '@/models/userModel';
+
+const mockedAccountFind = jest.fn().mockReturnValue(createAccounts());
 
 const mockedAccountFindById = jest
   .fn()
   .mockImplementation((accountId: string) => {
     const fakeAccount = {
       _id: accountId,
+      user: 'incorrect-user',
       name: faker.finance.accountName(),
       bank: faker.company.name(),
       balance: Number(faker.finance.amount({ min: 1, dec: 2 })),
@@ -44,9 +47,7 @@ describe('account Routes: /api/v1/trpc/accounts/....', () => {
   setUpTestDB();
 
   beforeEach(async () => {
-    const { token, user: createdUser } = await createUser({
-      accountsOrNetWorth: 'accounts',
-    });
+    const { token, user: createdUser } = await createUser();
     userForPrivateRoutes = createdUser;
     req = createMockRequest(token);
     res = createMockResponse();
@@ -67,12 +68,10 @@ describe('account Routes: /api/v1/trpc/accounts/....', () => {
       });
 
       const dbAccount = await Account.findById(account._id.toString());
-      const user = (await User.findById(userId)) as UserDoc;
 
       expect(status).toBe('success');
       expect(userId).toEqual(userForPrivateRoutes._id.toString());
       expect(account._id.toString()).toEqual(dbAccount?._id.toString());
-      expect(user.accounts.includes(account._id)).toBeTruthy();
     });
   });
 
@@ -81,10 +80,10 @@ describe('account Routes: /api/v1/trpc/accounts/....', () => {
       const caller = createCaller(req, res);
 
       // *
-      // Mock findById, which is used in readAccounts()
+      // Mock find, which is used in readAccounts()
       // *
-      const originalAccountFindById = Account.findById;
-      Account.findById = mockedAccountFindById;
+      const originalAccountFind = Account.find;
+      Account.find = mockedAccountFind;
 
       const {
         status,
@@ -92,21 +91,17 @@ describe('account Routes: /api/v1/trpc/accounts/....', () => {
       } = await caller.accounts.readAccounts();
 
       // *
-      // Restore findById to its original
+      // Restore find to its original
       // *
-      Account.findById = originalAccountFindById;
+      Account.find = originalAccountFind;
 
       expect(status).toBe('success');
-      expect(accounts).toHaveLength(userForPrivateRoutes.accounts.length);
-      accounts.forEach((account, idx) => {
-        expect(account._id).toStrictEqual(userForPrivateRoutes.accounts[idx]);
-      });
+      expect(accounts).toBeTruthy();
+      expect(accounts.length).toBeGreaterThan(0);
     });
 
     test('should return an empty array if no associated accounts', async () => {
-      const { token: userWithNetWorthToken } = await createUser({
-        accountsOrNetWorth: 'netWorth',
-      });
+      const { token: userWithNetWorthToken } = await createUser();
       req.headers = {
         authorization: `Bearer ${userWithNetWorthToken}`,
       };
@@ -126,38 +121,32 @@ describe('account Routes: /api/v1/trpc/accounts/....', () => {
     test('should return the account in question should it exist and belong to the user', async () => {
       const caller = createCaller(req, res);
 
-      // *
-      // Mock findById, which is used in readAccount()
-      // *
-      const originalAccountFindById = Account.findById;
-      Account.findById = mockedAccountFindById;
+      const {
+        userId,
+        data: { account: accountCreated },
+      } = await caller.accounts.createAccount({
+        name: faker.finance.accountName(),
+        bank: faker.company.name(),
+        balance: Number(faker.finance.amount({ min: 1, dec: 2 })),
+      });
 
-      for (const accountId of userForPrivateRoutes.accounts) {
-        const {
-          status,
-          data: { account },
-        } = await caller.accounts.readAccount(accountId.toString());
+      const {
+        status,
+        data: { account },
+      } = await caller.accounts.readAccount(accountCreated._id.toString());
 
-        expect(status).toEqual('success');
-
-        expect(account._id.toString()).toEqual(accountId.toString());
-        expect(account.name).toBeDefined();
-        expect(account.bank).toBeDefined();
-        expect(account.balance).toBeDefined();
-      }
-
-      // *
-      // Restore findById to its original
-      // *
-      Account.findById = originalAccountFindById;
+      expect(status).toEqual('success');
+      expect(account._id.toString()).toEqual(accountCreated._id.toString());
+      expect(account.user.toString()).toEqual(userId);
+      expect(account.name).toBeDefined();
+      expect(account.bank).toBeDefined();
+      expect(account.balance).toBeDefined();
     });
 
     test('should return a 400 BAD_REQUEST error if the account does not exist', async () => {
       const caller = createCaller(req, res);
       try {
-        await caller.accounts.readAccount(
-          userForPrivateRoutes.accounts[0].toString()
-        );
+        await caller.accounts.readAccount(faker.database.mongodbObjectId());
       } catch (error) {
         expect(error.code).toEqual('BAD_REQUEST');
         expect(error.message).toEqual(accountErrors.noAccountFound);
@@ -285,55 +274,16 @@ describe('account Routes: /api/v1/trpc/accounts/....', () => {
       }
     });
 
-    test('should replace the account with a netWorth property if the account the user is trying to delete is their only account', async () => {
-      const caller = createCaller(req, res);
-
-      const {
-        userId: userIdAtCreation,
-        data: { account: accountCreated },
-      } = await caller.accounts.createAccount({
-        name: faker.finance.accountName(),
-        bank: faker.company.name(),
-        balance: Number(faker.finance.amount({ min: 1, dec: 2 })),
-      });
-
-      const userAfterCreation = (await User.findById(
-        userIdAtCreation
-      )) as UserDoc;
-
-      userAfterCreation.accounts = [accountCreated._id];
-      await userAfterCreation.save({ validateModifiedOnly: true });
-
-      const {
-        status,
-        userId,
-        data: { account },
-      } = await caller.accounts.deleteAccount(accountCreated._id.toString());
-
-      const user = (await User.findById(userId)) as UserDoc;
-
-      expect(status).toEqual('success');
-      expect(account).toBeNull();
-      expect(user.accounts).toHaveLength(0);
-      expect(user.netWorth).toBeDefined();
-      expect(user.netWorth).toEqual(accountCreated.balance);
-    });
-
     test('should delete the account if the account exists and belongs to the user', async () => {
       const caller = createCaller(req, res);
 
       const {
-        userId: userIdAtCreation,
         data: { account: accountCreated },
       } = await caller.accounts.createAccount({
         name: faker.finance.accountName(),
         bank: faker.company.name(),
         balance: Number(faker.finance.amount({ min: 1, dec: 2 })),
       });
-
-      const userAfterCreation = (await User.findById(
-        userIdAtCreation
-      )) as UserDoc;
 
       const {
         status,
@@ -342,9 +292,6 @@ describe('account Routes: /api/v1/trpc/accounts/....', () => {
 
       expect(status).toEqual('success');
       expect(account).toBeNull();
-      expect(
-        !userForPrivateRoutes.accounts.includes(accountCreated._id)
-      ).toBeTruthy();
     });
   });
 });

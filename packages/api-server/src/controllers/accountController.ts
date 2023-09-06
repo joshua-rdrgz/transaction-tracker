@@ -10,19 +10,7 @@ const createAccount = authProcedure
   .input(zodSchemas.accountRouteSchemas.createAccount)
   .mutation(async (opts) => {
     const { ctx, input } = opts;
-    const user = await User.findById(ctx.user.id);
-    const account = await Account.create(input);
-
-    if (user) {
-      if (user?.accounts) {
-        user.accounts.push(account._id);
-        await user.save({ validateModifiedOnly: true });
-      } else {
-        user.accounts = [account._id];
-        user.netWorth = undefined;
-        await user.save({ validateModifiedOnly: true });
-      }
-    }
+    const account = await Account.create({ user: ctx.user.id, ...input });
 
     return {
       status: 'success',
@@ -34,13 +22,7 @@ const createAccount = authProcedure
   });
 
 const readAccounts = authProcedure.query(async ({ ctx }) => {
-  const user = await User.findById(ctx.user.id);
-  const accounts: AccountDoc[] = [];
-
-  user?.accounts.forEach(async (accountId) => {
-    const account = await Account.findById(accountId);
-    if (account) accounts.push(account);
-  });
+  const accounts = await Account.find({ user: ctx.user.id });
 
   return {
     status: 'success',
@@ -55,7 +37,6 @@ const readAccount = authProcedure
   .input(zodSchemas.accountRouteSchemas.readAccount)
   .query(async (opts) => {
     const { ctx, input: accountId } = opts;
-    const user = await User.findById(ctx.user.id);
     const account = await Account.findById(accountId);
 
     if (!account)
@@ -64,7 +45,7 @@ const readAccount = authProcedure
         message: accountErrors.noAccountFound,
       });
 
-    if (!user?.accounts.includes(account._id))
+    if (account.user.toString() !== ctx.user.id)
       throw new TRPCError({
         code: 'UNAUTHORIZED',
         message: accountErrors.notAllowedAccess,
@@ -86,8 +67,6 @@ const updateAccount = authProcedure
       ctx,
       input: { accountId, data },
     } = opts;
-
-    const user = await User.findById(ctx.user.id);
     const accountProvided = await Account.findById(accountId);
 
     if (!accountProvided)
@@ -96,7 +75,7 @@ const updateAccount = authProcedure
         message: accountErrors.noAccountFound,
       });
 
-    if (!user?.accounts.includes(accountProvided._id))
+    if (accountProvided.user.toString() !== ctx.user.id)
       throw new TRPCError({
         code: 'UNAUTHORIZED',
         message: accountErrors.notAllowedAccess,
@@ -118,33 +97,21 @@ const deleteAccount = authProcedure
   .input(zodSchemas.accountRouteSchemas.deleteAccount)
   .mutation(async (opts) => {
     const { ctx, input } = opts;
+    const account = await Account.findById(input);
 
-    const user = await User.findById(ctx.user.id);
-    const accountProvided = await Account.findById(input);
-
-    if (!accountProvided)
+    if (!account)
       throw new TRPCError({
         code: 'BAD_REQUEST',
         message: accountErrors.noAccountFound,
       });
 
-    if (!user?.accounts.includes(accountProvided._id))
+    if (account.user.toString() !== ctx.user.id)
       throw new TRPCError({
         code: 'UNAUTHORIZED',
         message: accountErrors.notAllowedAccess,
       });
 
-    if (user.accounts.length === 1) {
-      console.log('FROM ROUTE: user only has 1 account!');
-      user.netWorth = accountProvided.balance;
-      await user.save({ validateModifiedOnly: true });
-    }
-
-    await Account.findByIdAndDelete(accountProvided._id);
-    user.accounts = user.accounts.filter(
-      (accountId) => accountId.toString() !== accountProvided._id.toString()
-    );
-    await user.save({ validateModifiedOnly: true });
+    await Account.findByIdAndDelete(account._id);
 
     return {
       status: 'success',

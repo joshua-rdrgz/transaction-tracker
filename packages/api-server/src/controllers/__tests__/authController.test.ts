@@ -29,7 +29,6 @@ describe('auth Routes: /api/v1/trpc/....', () => {
         email: faker.internet.email(),
         password: password,
         passwordConfirm: password,
-        netWorth: Number(faker.finance.amount({ min: 1, dec: 2 })),
       });
 
       const {
@@ -56,7 +55,6 @@ describe('auth Routes: /api/v1/trpc/....', () => {
           email: faker.internet.email(),
           password: password,
           passwordConfirm: password,
-          netWorth: Number(faker.finance.amount({ min: 1, dec: 2 })),
         });
 
         await caller.login({
@@ -79,7 +77,6 @@ describe('auth Routes: /api/v1/trpc/....', () => {
           email: faker.internet.email(),
           password: password,
           passwordConfirm: password,
-          netWorth: Number(faker.finance.amount({ min: 1, dec: 2 })),
         });
 
         // @ts-ignore

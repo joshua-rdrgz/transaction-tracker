@@ -3,11 +3,7 @@ import { signToken } from '@/utils/jwt';
 
 import User from '@/models/userModel';
 
-interface CreateUserOptions {
-  accountsOrNetWorth: 'accounts' | 'netWorth';
-}
-
-const createAccounts = () => {
+export const createAccounts = () => {
   const amountOfAccounts = Math.floor(Math.random() * 10) + 1;
   const accounts = [];
 
@@ -18,20 +14,13 @@ const createAccounts = () => {
   return accounts;
 };
 
-export const createUser = async (opts: CreateUserOptions) => {
-  const { accountsOrNetWorth } = opts;
-
+export const createUser = async () => {
   const userPassword = faker.internet.password();
   const user = await User.create({
     name: faker.person.fullName(),
     email: faker.internet.email(),
     password: userPassword,
     passwordConfirm: userPassword,
-    netWorth:
-      accountsOrNetWorth === 'netWorth'
-        ? Number(faker.finance.amount({ min: 1, dec: 2 }))
-        : undefined,
-    accounts: accountsOrNetWorth === 'accounts' ? createAccounts() : undefined,
   });
 
   const token = signToken(user._id.toString());
