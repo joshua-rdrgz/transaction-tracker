@@ -6,41 +6,41 @@ declare const _default: {
             email: z.ZodString;
             password: z.ZodString;
             passwordConfirm: z.ZodString;
-            avatar: z.ZodOptional<z.ZodString>;
+            avatar: z.ZodEffects<z.ZodEffects<z.ZodAny, any, any>, any, any>;
         }, "strip", z.ZodTypeAny, {
             name: string;
             email: string;
             password: string;
             passwordConfirm: string;
-            avatar?: string | undefined;
+            avatar?: any;
         }, {
             name: string;
             email: string;
             password: string;
             passwordConfirm: string;
-            avatar?: string | undefined;
+            avatar?: any;
         }>, {
             name: string;
             email: string;
             password: string;
             passwordConfirm: string;
-            avatar?: string | undefined;
+            avatar?: any;
         }, {
             name: string;
             email: string;
             password: string;
             passwordConfirm: string;
-            avatar?: string | undefined;
+            avatar?: any;
         }>;
         login: z.ZodObject<{
-            email: z.ZodString;
-            password: z.ZodString;
+            email: z.ZodOptional<z.ZodString>;
+            password: z.ZodOptional<z.ZodString>;
         }, "strip", z.ZodTypeAny, {
-            email: string;
-            password: string;
+            email?: string | undefined;
+            password?: string | undefined;
         }, {
-            email: string;
-            password: string;
+            email?: string | undefined;
+            password?: string | undefined;
         }>;
     };
     accountRouteSchemas: {
@@ -74,19 +74,19 @@ declare const _default: {
                 balance?: number | undefined;
             }>;
         }, "strip", z.ZodTypeAny, {
-            accountId: string;
             data: {
                 name?: string | undefined;
                 bank?: string | undefined;
                 balance?: number | undefined;
             };
+            accountId: string;
         }, {
-            accountId: string;
             data: {
                 name?: string | undefined;
                 bank?: string | undefined;
                 balance?: number | undefined;
             };
+            accountId: string;
         }>;
         deleteAccount: z.ZodString;
     };
