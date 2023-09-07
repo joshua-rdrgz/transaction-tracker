@@ -7,6 +7,7 @@ packages/api-server/node_modules
 packages/api-server/.env
 packages/api-server/coverage
 packages/api-server/dist
+packages/api-server/public/user-avatars
 
 # CLIENT
 packages/client/node_modules

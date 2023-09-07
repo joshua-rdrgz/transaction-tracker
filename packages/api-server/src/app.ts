@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import express from 'express';
 import mongoose from 'mongoose';
 import passport from 'passport';
@@ -13,6 +15,7 @@ import { createExpressMiddleware } from '@trpc/server/adapters/express';
 
 import { setUpJwtStrategy } from '@/config/passport';
 import { createContext } from '@/config/trpc';
+import { upload } from '@/config/multer';
 
 import { appRouter } from '@/routes/appRouter';
 
@@ -30,7 +33,7 @@ export default function(db: string) {
     app.use(morgan('dev'));
   }
 
-  app.use(cors({ origin: 'http://localhost:5173' }));
+  app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 
   const limiter = rateLimit({
     max: 100,
@@ -52,11 +55,26 @@ export default function(db: string) {
 
   app.use(hpp());
 
-  app.use(express.static(`${__dirname}/public`));
+  app.use(express.static(path.join(__dirname, './public')));
 
   /**
    * ROUTES
    */
+  app.post('/api/v1/upload', upload.single('avatar'), (req, res) => {
+    if (!req.file) {
+      return res.status(400).json({
+        status: 'fail',
+        message: 'No file provided.',
+      });
+    }
+
+    res.status(200).json({
+      status: 'success',
+      message: 'File Uploaded!',
+      imageName: req.file.path.split('/').pop(),
+    });
+  });
+
   app.use(
     '/api/v1/trpc',
     createExpressMiddleware({ router: appRouter, createContext })
