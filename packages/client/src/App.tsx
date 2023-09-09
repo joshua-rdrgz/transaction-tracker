@@ -1,9 +1,12 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import { trpc } from '@/config/trpc';
+
+import { ProtectedRoute } from '@/features/auth/ProtectedRoute';
+import { AppLayout } from '@/ui/app-layout';
 
 import Signup from '@/pages/Signup';
 
@@ -43,6 +46,24 @@ function App() {
 
         <BrowserRouter>
           <Routes>
+            {/* PROTECTED ROUTES */}
+            <Route
+              element={
+                <ProtectedRoute>
+                  <AppLayout />
+                </ProtectedRoute>
+              }
+            >
+              <Route index element={<Navigate replace to='/dashboard' />} />
+              <Route
+                path='dashboard'
+                element={
+                  <div>This is the home page. You're signed in, yay!</div>
+                }
+              />
+            </Route>
+
+            {/* UNPROTECTED ROUTES */}
             <Route path='signup' element={<Signup />} />
           </Routes>
         </BrowserRouter>
