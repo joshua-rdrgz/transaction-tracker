@@ -20,7 +20,8 @@ const sendAuthResponse = (user: UserDoc, ctx: IContext) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
     maxAge: TWO_WEEKS_IN_MS,
-    domain: process.env.CLIENT_DOMAIN as string,
+    // Use domain only in production. Server and client MUST be on same domain, or cookies WON'T work.  Period.
+    // domain: process.env.CLIENT_DOMAIN as string,
   });
 
   return {
