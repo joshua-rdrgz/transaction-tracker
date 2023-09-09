@@ -54,13 +54,7 @@ const signupInputs = [
 export const SignupForm = () => {
   const signupMutation = trpc.signup.useMutation();
   const form = useForm<SignupFormSchema>({
-    resolver: async (values, context, options) => {
-      console.log(
-        'result: ',
-        await zodResolver(signupFormSchema)(values, context, options)
-      );
-      return zodResolver(signupFormSchema)(values, context, options);
-    },
+    resolver: zodResolver(signupFormSchema),
     defaultValues: {
       name: '',
       email: '',
@@ -72,26 +66,23 @@ export const SignupForm = () => {
   });
   const navigate = useNavigate();
 
-  const onSubmit = useCallback(async (values: SignupFormSchema) => {
-    if (values.avatar) {
-      await signupWithAvatar(values.avatar, (avatarWasUploaded, avatarFile) =>
-        signupMutation.mutate({
-          ...values,
-          avatar: avatarWasUploaded && avatarFile,
-        })
-      );
-      // LOG USER IN (GET USER SESSION POPULATED)
-
-      // NAVIGATE TO HOME PAGE
-      // navigate('/');
-    } else {
-      signupMutation.mutate(values);
-      // LOG USER IN (GET USER SESSION POPULATED)
-
-      // NAVIGATE TO HOME PAGE
-      // navigate('/');
-    }
-  }, []);
+  const onSubmit = useCallback(
+    async (values: SignupFormSchema) => {
+      if (values.avatar) {
+        await signupWithAvatar(values.avatar, (avatarWasUploaded, avatarFile) =>
+          signupMutation.mutate({
+            ...values,
+            avatar: avatarWasUploaded && avatarFile,
+          })
+        );
+        navigate('/');
+      } else {
+        signupMutation.mutate(values);
+        navigate('/');
+      }
+    },
+    [signupWithAvatar, signupMutation, navigate]
+  );
 
   return (
     <Form form={form}>
