@@ -1,4 +1,3 @@
-import fs from 'fs';
 import path from 'path';
 import express from 'express';
 import mongoose from 'mongoose';
@@ -11,6 +10,7 @@ import xss from 'xss-clean';
 import compression from 'compression';
 import cors from 'cors';
 import hpp from 'hpp';
+import cookieParser from 'cookie-parser';
 import { createExpressMiddleware } from '@trpc/server/adapters/express';
 
 import { setUpJwtStrategy } from '@/config/passport';
@@ -41,6 +41,8 @@ export default function(db: string) {
     message: 'Too many requests from this IP, please try again in an hour!',
   });
   app.use('/api', limiter);
+
+  app.use(cookieParser());
 
   setUpJwtStrategy(passport);
   app.use(passport.initialize());
