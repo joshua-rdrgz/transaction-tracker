@@ -1,14 +1,19 @@
-import {
-  Strategy as JwtStrategy,
-  ExtractJwt,
-  StrategyOptions,
-} from 'passport-jwt';
+import { Request } from 'express';
+import { Strategy as JwtStrategy, StrategyOptions } from 'passport-jwt';
 import { PassportStatic } from 'passport';
 
 import User from '@/models/userModel';
 
+const extractTokenFromCookie = function(req: Request) {
+  let token: string | null = null;
+  if (req && req.cookies) {
+    token = req.cookies['jwtToken'];
+  }
+  return token;
+};
+
 const options: StrategyOptions = {
-  jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+  jwtFromRequest: extractTokenFromCookie,
   secretOrKey: process.env.JWT_SECRET,
   jsonWebTokenOptions: {
     maxAge: process.env.JWT_EXPIRES_IN,
