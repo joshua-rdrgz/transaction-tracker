@@ -9,7 +9,7 @@ import setUpTestDB, {
 import { createUser, createAccounts } from '@/utils/testUtils';
 import { accountErrors } from '@/errorMessages';
 import Account, { IAccount } from '@/models/accountModel';
-import User, { UserDoc } from '@/models/userModel';
+import { UserDoc } from '@/models/userModel';
 
 const mockedAccountFind = jest.fn().mockReturnValue(createAccounts());
 
