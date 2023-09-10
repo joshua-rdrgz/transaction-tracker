@@ -2,10 +2,15 @@ import fs from 'fs';
 import path from 'path';
 import multer from 'multer';
 
-const UPLOAD_DIRECTORY = path.resolve(__dirname, '../public/user-avatars');
+const PUBLIC_DIRECTORY = './public';
+const AVATAR_BUCKET_DIRECTORY = './public/user-avatars';
 
-if (!fs.existsSync(UPLOAD_DIRECTORY)) {
-  fs.mkdirSync(UPLOAD_DIRECTORY);
+if (!fs.existsSync(PUBLIC_DIRECTORY)) {
+  fs.mkdirSync(PUBLIC_DIRECTORY);
+}
+
+if (!fs.existsSync(AVATAR_BUCKET_DIRECTORY)) {
+  fs.mkdirSync(AVATAR_BUCKET_DIRECTORY);
 }
 
 const storage = multer.diskStorage({
