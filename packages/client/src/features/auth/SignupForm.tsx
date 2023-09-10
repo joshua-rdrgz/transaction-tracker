@@ -5,12 +5,14 @@ import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import zodSchemas from 'shared-zod-schemas';
-import { trpc } from '@/config/trpc';
-import { signupWithAvatar } from '@/services/apiAuth';
+import { signupUser } from '@/lib/services/apiAuth';
+import { useSignup } from '@/features/auth/useSignup';
+import { useUpdateUser } from '@/features/auth/useUpdateUser';
 
 import { Form } from '@/ui/form';
 import { FormItem } from '@/ui/form-item';
 import { Button } from '@/ui/button';
+import { waitToFinishViaPromise } from '@/lib/utils';
 
 const signupFormSchema = zodSchemas.authRouteSchemas.signup;
 type SignupFormSchema = z.infer<typeof signupFormSchema>;
@@ -52,7 +54,8 @@ const signupInputs = [
 ];
 
 export const SignupForm = () => {
-  const signupMutation = trpc.signup.useMutation();
+  const { isSigningUp, signup } = useSignup();
+  const { isUpdatingUser, updateUser } = useUpdateUser();
   const form = useForm<SignupFormSchema>({
     resolver: zodResolver(signupFormSchema),
     defaultValues: {
@@ -68,20 +71,12 @@ export const SignupForm = () => {
 
   const onSubmit = useCallback(
     async (values: SignupFormSchema) => {
-      if (values.avatar) {
-        await signupWithAvatar(values.avatar, (avatarWasUploaded, avatarFile) =>
-          signupMutation.mutate({
-            ...values,
-            avatar: avatarWasUploaded && avatarFile,
-          })
-        );
-        navigate('/');
-      } else {
-        signupMutation.mutate(values);
-        navigate('/');
-      }
+      await waitToFinishViaPromise(() =>
+        signupUser(values, signup, updateUser)
+      );
+      navigate('/');
     },
-    [signupWithAvatar, signupMutation, navigate]
+    [signupUser, signup, updateUser, navigate]
   );
 
   return (
@@ -96,9 +91,9 @@ export const SignupForm = () => {
             key={input.value}
             control={form.control}
             name={input.value}
+            disabled={isSigningUp || isUpdatingUser}
             render={({ field }) => {
               if (input.value === 'avatar') {
-                field.onChange;
                 input.props.onChange = (event: any) =>
                   field.onChange(event.target.files[0]);
                 input.props.value = field.value?.fileName;
