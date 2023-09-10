@@ -1,7 +1,11 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+  MutationCache,
+  QueryCache,
+  QueryClient,
+  QueryClientProvider,
+} from '@tanstack/react-query';
 import { httpBatchLink } from '@trpc/client';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { Toaster, toast } from 'react-hot-toast';
 
 import { trpc } from '@/config/trpc';
 
@@ -12,10 +16,18 @@ import Signup from '@/pages/Signup';
 
 import './index.css';
 
+const onError = (error: any) => {
+  toast.error(`Something went wrong: ${error.message}`);
+};
+
 const queryClient = new QueryClient({
+  queryCache: new QueryCache({ onError }),
+  mutationCache: new MutationCache({ onError }),
   defaultOptions: {
     queries: {
       staleTime: 0,
+      retry: false,
+      useErrorBoundary: true,
     },
   },
 });
