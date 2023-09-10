@@ -2,6 +2,7 @@ import { TRPCError } from '@trpc/server';
 import zodSchemas from 'shared-zod-schemas';
 
 import { IContext, publicProcedure } from '@/config/trpc';
+import { authProcedure } from '@/procedures/authProcedure';
 import { signToken } from '@/utils/jwt';
 import User, { UserDoc } from '@/models/userModel';
 import { authErrors } from '@/errorMessages';
@@ -60,7 +61,34 @@ const login = publicProcedure
     return sendAuthResponse(user, ctx);
   });
 
+const getCurrentUser = authProcedure.query(async (opts) => {
+  const { ctx } = opts;
+  const user = await User.findById(ctx.user.id);
+  return {
+    status: 'success',
+    data: { user },
+  };
+});
+
+const updateCurrentUser = authProcedure
+  .input(zodSchemas.authRouteSchemas.updateCurrentUser)
+  .mutation(async (opts) => {
+    const { ctx, input } = opts;
+    const user = await User.findByIdAndUpdate(ctx.user.id, input, {
+      new: true,
+      runValidators: true,
+    });
+    if (!user)
+      throw new TRPCError({
+        code: 'UNAUTHORIZED',
+        message: "Either the user doesn't exist, or you are not authorized.",
+      });
+    return sendAuthResponse(user, ctx);
+  });
+
 export default {
   signup,
   login,
+  getCurrentUser,
+  updateCurrentUser,
 };
