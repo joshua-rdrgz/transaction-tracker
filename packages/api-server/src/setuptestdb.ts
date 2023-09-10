@@ -41,8 +41,8 @@ const dropCollections = async () => {
 export const createMockRequest = (token: string | null = null): Request => {
   const req = {} as Request;
   if (token) {
-    req.headers = {
-      authorization: `Bearer ${token}`,
+    req.cookies = {
+      jwtToken: token,
     };
   }
   return req;
