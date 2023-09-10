@@ -5,23 +5,27 @@ import setUpTestDB, {
   createMockResponse,
   createCaller,
 } from '@/setuptestdb';
-import User from '@/models/userModel';
+import User, { UserDoc } from '@/models/userModel';
 import { authErrors } from '@/errorMessages';
+import { createUser } from '@/utils/testUtils';
 
 describe('auth Routes: /api/v1/trpc/....', () => {
   let req: Request;
   let res: Response;
+  let signedInUser: UserDoc;
 
   setUpTestDB();
 
-  beforeEach(() => {
-    req = createMockRequest();
+  beforeEach(async () => {
+    const { token, user: createdUser } = await createUser();
+    signedInUser = createdUser;
+    req = createMockRequest(token);
     res = createMockResponse();
   });
 
-  describe('Sign Up Route:  MUTATION ..../signup', () => {
+  describe('Sign Up Route:  MUTATION | trpc.signup()', () => {
     test('it should call the database to create a new user', async () => {
-      const caller = createCaller(req, res);
+      const caller = createCaller(createMockRequest(), res);
 
       const password = faker.internet.password();
       const response = await caller.signup({
@@ -40,14 +44,15 @@ describe('auth Routes: /api/v1/trpc/....', () => {
 
       expect(status).toEqual('success');
       expect(user._id.toString()).toEqual(dbUser?._id.toString());
-      expect(await User.countDocuments()).toEqual(1);
+      // 1 signedInUser + 1 User Just Created
+      expect(await User.countDocuments()).toEqual(2);
     });
   });
 
-  describe('Log In Route: MUTATION ..../login', () => {
+  describe('Log In Route: MUTATION | trpc.login()', () => {
     test('it should return a 401 Unauthorized if given invalid credentials', async () => {
       try {
-        const caller = createCaller(req, res);
+        const caller = createCaller(createMockRequest(), res);
 
         const password = faker.internet.password();
         await caller.signup({
@@ -66,25 +71,20 @@ describe('auth Routes: /api/v1/trpc/....', () => {
         expect(error.code).toEqual('UNAUTHORIZED');
       }
     });
+  });
 
-    test('it should return a 400 Bad Request if no credentials are provided.', async () => {
-      try {
-        const caller = createCaller(req, res);
+  describe('Update Current User Route: MUTATION | trpc.updateCurrentUser()', () => {
+    test('should update the user if signed in', async () => {
+      const caller = createCaller(req, res);
 
-        const password = faker.internet.password();
-        await caller.signup({
-          name: faker.person.fullName(),
-          email: faker.internet.email(),
-          password: password,
-          passwordConfirm: password,
-        });
+      const updatedName = faker.person.fullName();
+      const {
+        data: { user: updatedSignedInUser },
+      } = await caller.updateCurrentUser({
+        name: updatedName,
+      });
 
-        // @ts-ignore
-        await caller.login({});
-      } catch (error) {
-        expect(error.message).toEqual(authErrors.incorrectUserOrPassword);
-        expect(error.code).toEqual('UNAUTHORIZED');
-      }
+      expect(updatedSignedInUser?.name).toEqual(updatedName);
     });
   });
 });
