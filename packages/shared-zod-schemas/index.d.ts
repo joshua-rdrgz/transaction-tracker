@@ -42,6 +42,16 @@ declare const _default: {
             email?: string | undefined;
             password?: string | undefined;
         }>;
+        updateCurrentUser: z.ZodObject<{
+            name: z.ZodOptional<z.ZodNullable<z.ZodString>>;
+            avatar: z.ZodOptional<z.ZodNullable<z.ZodEffects<z.ZodEffects<z.ZodAny, any, any>, any, any>>>;
+        }, "strip", z.ZodTypeAny, {
+            name?: string | null | undefined;
+            avatar?: any;
+        }, {
+            name?: string | null | undefined;
+            avatar?: any;
+        }>;
     };
     accountRouteSchemas: {
         createAccount: z.ZodObject<{

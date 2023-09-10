@@ -43,6 +43,19 @@ exports.default = {
             email: zod_1.z.string().optional(),
             password: zod_1.z.string().optional(),
         }),
+        updateCurrentUser: zod_1.z.object({
+            name: zod_1.z.string().nullish(),
+            avatar: zod_1.z
+                .any()
+                .refine((file) => { var _a; return (((_a = file === null || file === void 0 ? void 0 : file[0]) === null || _a === void 0 ? void 0 : _a.size) ? file[0].size >= MAX_FILE_SIZE : true); }, 'Max file size is 2MB.')
+                .refine((file) => {
+                var _a, _b;
+                return ((_a = file === null || file === void 0 ? void 0 : file[0]) === null || _a === void 0 ? void 0 : _a.size)
+                    ? ACCEPTED_IMAGE_TYPES.includes((_b = file === null || file === void 0 ? void 0 : file[0]) === null || _b === void 0 ? void 0 : _b.type)
+                    : true;
+            }, 'Only .jpg, .jpeg, .png, and .webp files are accepted.')
+                .nullish(),
+        }),
     },
     accountRouteSchemas: {
         createAccount: zod_1.z.object({

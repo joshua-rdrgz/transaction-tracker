@@ -47,6 +47,23 @@ export default {
       email: z.string().optional(),
       password: z.string().optional(),
     }),
+    updateCurrentUser: z.object({
+      name: z.string().nullish(),
+      avatar: z
+        .any()
+        .refine(
+          (file) => (file?.[0]?.size ? file[0].size >= MAX_FILE_SIZE : true),
+          'Max file size is 2MB.'
+        )
+        .refine(
+          (file) =>
+            file?.[0]?.size
+              ? ACCEPTED_IMAGE_TYPES.includes(file?.[0]?.type)
+              : true,
+          'Only .jpg, .jpeg, .png, and .webp files are accepted.'
+        )
+        .nullish(),
+    }),
   },
   accountRouteSchemas: {
     createAccount: z.object({
