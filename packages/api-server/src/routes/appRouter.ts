@@ -1,10 +1,6 @@
-import { z } from 'zod';
-
-import { router, publicProcedure, mergeRouters } from '../config/trpc';
-import { authProcedure } from '@/procedures/authProcedure';
+import { router, mergeRouters } from '../config/trpc';
 import { authRoutes } from '@/routes/authRoutes';
 import { accountRoutes } from '@/routes/accountRoutes';
-import User from '@/models/userModel';
 
 export const baseAppRoutes = router({
   accounts: accountRoutes,
