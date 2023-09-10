@@ -67,10 +67,8 @@ function handleMongooseValidationErrors(
   const errorCodeNumber = TRPC_ERROR_CODES_BY_KEY['BAD_REQUEST'];
   const errorCode = 'BAD_REQUEST';
 
-  const errorMessages = error.message;
-  const errorMessageArr = errorMessages
-    .replace('User validation failed: ', '')
-    .split(', ');
+  const errorMessages = error.message.replace('User validation failed: ', '');
+  const errorMessageArr = errorMessages.split(', ');
 
   if (errorMessageArr.length === 1) {
     const [errorMessage] = errorMessageArr;
@@ -78,7 +76,7 @@ function handleMongooseValidationErrors(
     const errorObj = { [property]: message.slice(1) };
     return {
       ...shape,
-      message: 'Validation error on server.',
+      message: errorMessages,
       code: errorCodeNumber,
       data: {
         ...shape.data,
@@ -97,7 +95,7 @@ function handleMongooseValidationErrors(
 
   return {
     ...shape,
-    message: 'Multiple validation errors on server.',
+    message: errorMessages,
     code: errorCodeNumber,
     data: {
       ...shape.data,
