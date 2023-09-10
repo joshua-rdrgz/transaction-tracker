@@ -1,3 +1,11 @@
+import {
+  createBrowserRouter,
+  createRoutesFromElements,
+  Route,
+  Navigate,
+  RouterProvider,
+} from 'react-router-dom';
+import {
   MutationCache,
   QueryCache,
   QueryClient,
@@ -13,6 +21,7 @@ import { ProtectedRoute } from '@/features/auth/ProtectedRoute';
 import { AppLayout } from '@/ui/app-layout';
 
 import Signup from '@/pages/Signup';
+import Login from '@/pages/Login';
 
 import './index.css';
 
@@ -50,35 +59,38 @@ const trpcClient = trpc.createClient({
   ],
 });
 
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <>
+      {/* PROTECTED ROUTES */}
+      <Route
+        element={
+          <ProtectedRoute>
+            <AppLayout />
+          </ProtectedRoute>
+        }
+      >
+        <Route index element={<Navigate replace to='/dashboard' />} />
+        <Route
+          path='dashboard'
+          element={<div>This is the home page. You're signed in, yay!</div>}
+        />
+      </Route>
+
+      {/* PUBLIC ROUTES */}
+      <Route path='signup' element={<Signup />} />
+      <Route path='login' element={<Login />} />
+    </>
+  )
+);
+
 function App() {
   return (
     <trpc.Provider client={trpcClient} queryClient={queryClient}>
       <QueryClientProvider client={queryClient}>
+        <RouterProvider router={router} />
+        <Toaster position='top-right' />
         <ReactQueryDevtools initialIsOpen={false} />
-
-        <BrowserRouter>
-          <Routes>
-            {/* PROTECTED ROUTES */}
-            <Route
-              element={
-                <ProtectedRoute>
-                  <AppLayout />
-                </ProtectedRoute>
-              }
-            >
-              <Route index element={<Navigate replace to='/dashboard' />} />
-              <Route
-                path='dashboard'
-                element={
-                  <div>This is the home page. You're signed in, yay!</div>
-                }
-              />
-            </Route>
-
-            {/* UNPROTECTED ROUTES */}
-            <Route path='signup' element={<Signup />} />
-          </Routes>
-        </BrowserRouter>
       </QueryClientProvider>
     </trpc.Provider>
   );
