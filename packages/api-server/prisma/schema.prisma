@@ -1,0 +1,86 @@
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id           String  @id @default(cuid())
+  name         String
+  email        String  @unique
+  passwordHash String
+  avatar       String?
+
+  accounts     Account[]
+  categories   Category[]
+  transactions Transaction[]
+}
+
+model Account {
+  id             String  @id @default(cuid())
+  userId         String
+  name           String
+  bank           String
+  initialBalance Decimal
+
+  transactions Transaction[]
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}
+
+model Category {
+  id       String @id @default(cuid())
+  userId   String
+  bucketId String
+  name     String
+
+  targets      Target[]
+  transactions Transaction[]
+
+  user           User           @relation(fields: [userId], references: [id])
+  categoryBucket CategoryBucket @relation(fields: [bucketId], references: [id])
+
+  @@index([userId])
+  @@index([bucketId])
+}
+
+model CategoryBucket {
+  id   String @id @default(cuid())
+  name String
+
+  categories Category[]
+}
+
+model Target {
+  date       DateTime
+  categoryId String
+
+  category Category @relation(fields: [categoryId], references: [id])
+
+  @@id([date, categoryId])
+  @@index([categoryId])
+}
+
+model Transaction {
+  id          String   @id @default(cuid())
+  userId      String
+  accountId   String
+  categoryId  String
+  amount      Int
+  description String
+  date        DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id])
+  account  Account  @relation(fields: [accountId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
+
+  @@index([userId])
+  @@index([accountId])
+  @@index([categoryId])
+}
