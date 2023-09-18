@@ -2,7 +2,7 @@ import { Request } from 'express';
 import { Strategy as JwtStrategy, StrategyOptions } from 'passport-jwt';
 import { PassportStatic } from 'passport';
 
-import User from '@/models/userModel';
+import prisma from '@/config/prisma';
 
 const extractTokenFromCookie = function(req: Request) {
   let token: string | null = null;
@@ -23,7 +23,12 @@ const options: StrategyOptions = {
 export function setUpJwtStrategy(passport: PassportStatic) {
   passport.use(
     new JwtStrategy(options, function(payload, done) {
-      User.findOne({ _id: payload.sub })
+      prisma.user
+        .findUnique({
+          where: {
+            id: payload.sub,
+          },
+        })
         .then((user) => {
           if (user) {
             return done(null, user);

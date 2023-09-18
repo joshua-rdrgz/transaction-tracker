@@ -2,7 +2,6 @@ import passport, { AuthenticateCallback } from 'passport';
 import { TRPCError } from '@trpc/server';
 
 import { Context, middleware, publicProcedure } from '@/config/trpc';
-import { UserDoc } from '@/models/userModel';
 import { authErrors } from '@/errorMessages';
 
 const passportAuthCallback = (
@@ -22,7 +21,9 @@ const passportAuthCallback = (
     );
     return;
   }
-  ctx.user = { id: (user as UserDoc)._id.toString() };
+  // BUGFIX: TypeScript support
+  // @ts-ignore
+  ctx.user = { id: user.id };
   res(null);
 };
 
