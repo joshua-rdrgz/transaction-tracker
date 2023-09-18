@@ -48,7 +48,7 @@ export default {
       password: z.string().optional(),
     }),
     updateCurrentUser: z.object({
-      name: z.string().nullish(),
+      name: z.string().optional(),
       avatar: z
         .any()
         .refine(
@@ -62,14 +62,16 @@ export default {
               : true,
           'Only .jpg, .jpeg, .png, and .webp files are accepted.'
         )
-        .nullish(),
+        .optional(),
     }),
   },
   accountRouteSchemas: {
     createAccount: z.object({
       name: z.string().nonempty('Name is required.'),
       bank: z.string().nonempty('Bank is required.'),
-      balance: z.coerce.number({ required_error: 'Balance is required.' }),
+      initialBalance: z.coerce.number({
+        required_error: 'Balance is required.',
+      }),
     }),
     readAccount: z.string().nonempty('Account ID is required.'),
     updateAccount: z.object({
@@ -77,7 +79,7 @@ export default {
       data: z.object({
         name: z.string().optional(),
         bank: z.string().optional(),
-        balance: z.number().optional(),
+        initialBalance: z.number().optional(),
       }),
     }),
     deleteAccount: z.string().nonempty('Account ID is required.'),

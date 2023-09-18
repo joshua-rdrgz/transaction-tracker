@@ -43,13 +43,13 @@ declare const _default: {
             password?: string | undefined;
         }>;
         updateCurrentUser: z.ZodObject<{
-            name: z.ZodOptional<z.ZodNullable<z.ZodString>>;
-            avatar: z.ZodOptional<z.ZodNullable<z.ZodEffects<z.ZodEffects<z.ZodAny, any, any>, any, any>>>;
+            name: z.ZodOptional<z.ZodString>;
+            avatar: z.ZodOptional<z.ZodEffects<z.ZodEffects<z.ZodAny, any, any>, any, any>>;
         }, "strip", z.ZodTypeAny, {
-            name?: string | null | undefined;
+            name?: string | undefined;
             avatar?: any;
         }, {
-            name?: string | null | undefined;
+            name?: string | undefined;
             avatar?: any;
         }>;
     };
@@ -57,15 +57,15 @@ declare const _default: {
         createAccount: z.ZodObject<{
             name: z.ZodString;
             bank: z.ZodString;
-            balance: z.ZodNumber;
+            initialBalance: z.ZodNumber;
         }, "strip", z.ZodTypeAny, {
             name: string;
             bank: string;
-            balance: number;
+            initialBalance: number;
         }, {
             name: string;
             bank: string;
-            balance: number;
+            initialBalance: number;
         }>;
         readAccount: z.ZodString;
         updateAccount: z.ZodObject<{
@@ -73,28 +73,28 @@ declare const _default: {
             data: z.ZodObject<{
                 name: z.ZodOptional<z.ZodString>;
                 bank: z.ZodOptional<z.ZodString>;
-                balance: z.ZodOptional<z.ZodNumber>;
+                initialBalance: z.ZodOptional<z.ZodNumber>;
             }, "strip", z.ZodTypeAny, {
                 name?: string | undefined;
                 bank?: string | undefined;
-                balance?: number | undefined;
+                initialBalance?: number | undefined;
             }, {
                 name?: string | undefined;
                 bank?: string | undefined;
-                balance?: number | undefined;
+                initialBalance?: number | undefined;
             }>;
         }, "strip", z.ZodTypeAny, {
             data: {
                 name?: string | undefined;
                 bank?: string | undefined;
-                balance?: number | undefined;
+                initialBalance?: number | undefined;
             };
             accountId: string;
         }, {
             data: {
                 name?: string | undefined;
                 bank?: string | undefined;
-                balance?: number | undefined;
+                initialBalance?: number | undefined;
             };
             accountId: string;
         }>;

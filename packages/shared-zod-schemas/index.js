@@ -44,7 +44,7 @@ exports.default = {
             password: zod_1.z.string().optional(),
         }),
         updateCurrentUser: zod_1.z.object({
-            name: zod_1.z.string().nullish(),
+            name: zod_1.z.string().optional(),
             avatar: zod_1.z
                 .any()
                 .refine((file) => { var _a; return (((_a = file === null || file === void 0 ? void 0 : file[0]) === null || _a === void 0 ? void 0 : _a.size) ? file[0].size >= MAX_FILE_SIZE : true); }, 'Max file size is 2MB.')
@@ -54,14 +54,16 @@ exports.default = {
                     ? ACCEPTED_IMAGE_TYPES.includes((_b = file === null || file === void 0 ? void 0 : file[0]) === null || _b === void 0 ? void 0 : _b.type)
                     : true;
             }, 'Only .jpg, .jpeg, .png, and .webp files are accepted.')
-                .nullish(),
+                .optional(),
         }),
     },
     accountRouteSchemas: {
         createAccount: zod_1.z.object({
             name: zod_1.z.string().nonempty('Name is required.'),
             bank: zod_1.z.string().nonempty('Bank is required.'),
-            balance: zod_1.z.coerce.number({ required_error: 'Balance is required.' }),
+            initialBalance: zod_1.z.coerce.number({
+                required_error: 'Balance is required.',
+            }),
         }),
         readAccount: zod_1.z.string().nonempty('Account ID is required.'),
         updateAccount: zod_1.z.object({
@@ -69,7 +71,7 @@ exports.default = {
             data: zod_1.z.object({
                 name: zod_1.z.string().optional(),
                 bank: zod_1.z.string().optional(),
-                balance: zod_1.z.number().optional(),
+                initialBalance: zod_1.z.number().optional(),
             }),
         }),
         deleteAccount: zod_1.z.string().nonempty('Account ID is required.'),
