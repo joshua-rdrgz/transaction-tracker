@@ -9,12 +9,7 @@ process.on('uncaughtException', (err) => {
 dotenv.config();
 import createApp from './app';
 
-const DB = (process.env.DATABASE as string)
-  .replace('<USERNAME>', process.env.DATABASE_USERNAME as string)
-  .replace('<PASSWORD>', process.env.DATABASE_PASSWORD as string)
-  .replace('<DB_TYPE>', process.env.DATABASE_REG_TYPE as string);
-
-const app = createApp(DB);
+const app = createApp();
 
 const port = process.env.PORT || 3000;
 const server = app.listen(port, () => {

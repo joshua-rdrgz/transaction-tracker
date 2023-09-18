@@ -1,6 +1,5 @@
 import path from 'path';
 import express from 'express';
-import mongoose from 'mongoose';
 import passport from 'passport';
 import morgan from 'morgan';
 import rateLimit from 'express-rate-limit';
@@ -22,12 +21,10 @@ import { appRouter } from '@/routes/appRouter';
 import OutsideTRPCError from '@/errors/outsideTRPCError';
 import globalErrorHandler from '@/errors/globalErrorHandler';
 
-export default function(db: string) {
+export default function() {
   const app = express();
 
   app.use(helmet());
-
-  mongoose.connect(db).then(() => console.log('DB connection successful!'));
 
   if (process.env.NODE_ENV === 'development') {
     app.use(morgan('dev'));
