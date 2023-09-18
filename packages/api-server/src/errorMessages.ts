@@ -5,10 +5,8 @@ export const accountErrors = {
   noBalance: 'An account must have a balance.  Please provide one.',
   balanceBelowZero:
     'The balance provided is below 0.  Please provide a balance above 0.',
-  noAccountFound:
-    'The account you requested does not exist.  Please try again.',
-  notAllowedAccess:
-    'The account you requested does not belong to you.  Please try again.',
+  noAccountOrNoAccess:
+    'The account you requested does not exist or the account does not belong to you.  Please try again.',
 } as const;
 
 export const authErrors = {
