@@ -69,7 +69,7 @@ export const LoginForm = () => {
           />
         ))}
 
-        <Button>Log in</Button>
+        <Button className='bg-orange-950 hover:bg-yellow-800'>Log in</Button>
       </form>
     </Form>
   );
