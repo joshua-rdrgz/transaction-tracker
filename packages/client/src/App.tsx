@@ -16,6 +16,9 @@ import { httpBatchLink } from '@trpc/client';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster, toast } from 'react-hot-toast';
 
+import { ThemeProvider } from '@/features/theme/theme-provider';
+import { ErrorBoundary } from 'react-error-boundary';
+
 import { trpc } from '@/config/trpc';
 
 import { ProtectedRoute } from '@/features/auth/ProtectedRoute';
@@ -23,10 +26,9 @@ import { AppLayout } from '@/ui/app-layout';
 
 import Signup from '@/pages/Signup';
 import Login from '@/pages/Login';
+import ErrorPage from '@/pages/Error';
 
 import './index.css';
-import { ErrorBoundary } from 'react-error-boundary';
-import ErrorPage from '@/pages/Error';
 
 const onError = (error: any) => {
   toast.error(`Something went wrong: ${error.message}`);
@@ -83,10 +85,11 @@ const router = createBrowserRouter(
         }
       >
         <Route index element={<Navigate replace to='/dashboard' />} />
-        <Route
-          path='dashboard'
-          element={<div>This is the home page. You're signed in, yay!</div>}
-        />
+        <Route path='dashboard' element={<div>Dashboard / Home</div>} />
+        <Route path='accounts' element={<div>Accounts</div>} />
+        <Route path='budget' element={<div>Budget (Year)</div>} />
+        <Route path='budget/:monthId' element={<div>Budget (Month)</div>} />
+        <Route path='settings' element={<div>Settings</div>} />
       </Route>
 
       {/* PUBLIC ROUTES */}
@@ -98,13 +101,15 @@ const router = createBrowserRouter(
 
 function App() {
   return (
-    <trpc.Provider client={trpcClient} queryClient={queryClient}>
-      <QueryClientProvider client={queryClient}>
-        <RouterProvider router={router} />
-        <Toaster position='top-right' />
-        <ReactQueryDevtools initialIsOpen={false} />
-      </QueryClientProvider>
-    </trpc.Provider>
+    <ThemeProvider>
+      <trpc.Provider client={trpcClient} queryClient={queryClient}>
+        <QueryClientProvider client={queryClient}>
+          <RouterProvider router={router} />
+          <Toaster position='top-right' />
+          <ReactQueryDevtools initialIsOpen={false} />
+        </QueryClientProvider>
+      </trpc.Provider>
+    </ThemeProvider>
   );
 }
 
