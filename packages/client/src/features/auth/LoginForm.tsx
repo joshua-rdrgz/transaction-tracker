@@ -1,11 +1,9 @@
 import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { z } from 'zod';
 import zodSchemas from 'shared-zod-schemas';
-import { waitToFinishViaPromise } from '@/lib/utils';
 
 import { useLogin } from '@/features/auth/useLogin';
 
@@ -31,7 +29,6 @@ const loginInputs = [
 ];
 
 export const LoginForm = () => {
-  const navigate = useNavigate();
   const { isLoggingIn, login } = useLogin();
   const loginForm = useForm<LoginFormSchema>({
     resolver: zodResolver(loginFormSchema),
@@ -44,10 +41,11 @@ export const LoginForm = () => {
 
   const onSubmit = useCallback(
     async (values: LoginFormSchema) => {
-      await waitToFinishViaPromise(() => login(values));
-      navigate('/');
+      login(values, {
+        onSettled: () => loginForm.reset(),
+      });
     },
-    [login, navigate]
+    [login]
   );
 
   return (
