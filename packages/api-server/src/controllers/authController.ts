@@ -5,10 +5,25 @@ import { IContext, publicProcedure } from '@/config/trpc';
 import { authProcedure } from '@/procedures/authProcedure';
 import { signToken } from '@/utils/jwt';
 import prisma, { prismaUser } from '@/config/prisma';
+import { catchCustomError } from '@/utils/catchCustomError';
+import { authErrors } from '@/errorMessages';
 
 const TWO_WEEKS_IN_MS = 1000 * 60 * 60 * 24 * 7 * 2;
 
-const sendAuthResponse = (user: any, ctx: IContext) => {
+const userWithNoPassword = <TUser extends {}>(
+  user: TUser
+): Omit<TUser, 'passwordHash'> => {
+  const userNoPassword = {
+    ...user,
+    passwordHash: undefined,
+  };
+  return userNoPassword;
+};
+
+const sendAuthResponse = <TUser extends { [key: string]: any }>(
+  user: TUser,
+  ctx: IContext
+) => {
   const token = signToken(user.id);
 
   ctx.res.cookie('jwtToken', token, {
@@ -21,17 +36,28 @@ const sendAuthResponse = (user: any, ctx: IContext) => {
 
   return {
     status: 'success',
-    data: { user },
+    data: { user: userWithNoPassword(user as Exclude<typeof user, null>) },
   };
 };
 
 const signup = publicProcedure
   .input(zodSchemas.authRouteSchemas.signup)
-  .mutation(async (opts) => {
-    const { ctx, input } = opts;
-    const newUser = await prismaUser.createUser(input);
-    return sendAuthResponse(newUser, ctx);
-  });
+  .mutation(
+    async (opts) =>
+      await catchCustomError(
+        opts,
+        async (opts) => {
+          const { ctx, input } = opts;
+          const newUser = await prismaUser.createUser(input);
+          return sendAuthResponse(newUser, ctx);
+        },
+        // The only server error to handle is a duplicate email field
+        {
+          meta: { target: 'email' },
+          message: authErrors.emailAlreadyInUse,
+        }
+      )
+  );
 
 const login = publicProcedure
   .input(zodSchemas.authRouteSchemas.login)
@@ -48,7 +74,7 @@ const getCurrentUser = authProcedure.query(async (opts) => {
   });
   return {
     status: 'success',
-    data: { user },
+    data: { user: userWithNoPassword(user as Exclude<typeof user, null>) },
   };
 });
 
