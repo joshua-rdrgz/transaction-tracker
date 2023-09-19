@@ -21,17 +21,11 @@ export function FormItem<T extends FieldValues, U extends FieldPath<T>>({
   return (
     <Form.Item className={itemClassName}>
       <div className='flex justify-between'>
-        <Form.Label className='text-[0.75rem] text-orange-900'>
-          {label}
-        </Form.Label>
+        <Form.Label className='text-[0.75rem]'>{label}</Form.Label>
         <Form.Message className='text-[0.75rem]' />
       </div>
       <Form.Control>
-        <Input
-          className='text-black focus:border-emerald-500'
-          {...field}
-          {...inputProps}
-        />
+        <Input {...field} {...inputProps} />
       </Form.Control>
     </Form.Item>
   );
