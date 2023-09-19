@@ -9,7 +9,7 @@ export default function ErrorPage({
       <header>Uh oh, something went wrong.... 🧐</header>
       <main>
         <p>{error.message}</p>
-        <button onClick={resetErrorBoundary}>Go Back</button>
+        <button onClick={resetErrorBoundary}>Try Logging In</button>
       </main>
     </div>
   );
