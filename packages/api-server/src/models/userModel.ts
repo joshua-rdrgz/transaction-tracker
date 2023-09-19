@@ -20,7 +20,6 @@ class PrismaUser {
       name: input.name,
       email: input.email,
       passwordHash: hashedPassword,
-      avatar: input.avatar,
     };
 
     return await this.prismaUser.create({ data });
