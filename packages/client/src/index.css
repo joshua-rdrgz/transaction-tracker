@@ -87,6 +87,7 @@
   }
 }
 
+/* For Active Navlinks */
 .active {
   background-color: hsl(var(--muted));
 }
