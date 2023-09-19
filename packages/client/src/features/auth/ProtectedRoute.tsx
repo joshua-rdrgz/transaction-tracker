@@ -13,13 +13,7 @@ export const ProtectedRoute: React.FC<IProtectedRouteProps> = ({
   const { isAuthenticated, isLoadingUser } = useUser();
 
   useEffect(() => {
-    console.log('USE EFFECT RENDERED');
-    console.log('isAuthenticated: ', isAuthenticated);
-    console.log('isLoadingUser: ', isLoadingUser);
-    if (!isAuthenticated && !isLoadingUser) {
-      console.log('NOT LOGGED IN, REROUTING TO LOGIN PAGE');
-      navigate('/login');
-    }
+    if (!isAuthenticated && !isLoadingUser) navigate('/login');
   }, [isAuthenticated, isLoadingUser]);
 
   if (isLoadingUser) {
