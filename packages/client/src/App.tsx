@@ -4,6 +4,7 @@ import {
   Route,
   Navigate,
   RouterProvider,
+  Outlet,
 } from 'react-router-dom';
 import {
   MutationCache,
@@ -24,6 +25,8 @@ import Signup from '@/pages/Signup';
 import Login from '@/pages/Login';
 
 import './index.css';
+import { ErrorBoundary } from 'react-error-boundary';
+import ErrorPage from '@/pages/Error';
 
 const onError = (error: any) => {
   toast.error(`Something went wrong: ${error.message}`);
@@ -61,7 +64,16 @@ const trpcClient = trpc.createClient({
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <>
+    <Route
+      element={
+        <ErrorBoundary
+          FallbackComponent={ErrorPage}
+          onReset={() => window.location.replace('/login')}
+        >
+          <Outlet />
+        </ErrorBoundary>
+      }
+    >
       {/* PROTECTED ROUTES */}
       <Route
         element={
@@ -80,7 +92,7 @@ const router = createBrowserRouter(
       {/* PUBLIC ROUTES */}
       <Route path='signup' element={<Signup />} />
       <Route path='login' element={<Login />} />
-    </>
+    </Route>
   )
 );
 
