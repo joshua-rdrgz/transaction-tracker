@@ -15,6 +15,8 @@ export const authErrors = {
     'Email or password was not provided.  Please provide your credentials to log in.',
   notLoggedIn:
     'You are not signed in and cannot access this resource.  Please log in to gain access.',
+  emailAlreadyInUse:
+    'This email is already in use.  Please try again with a different email.',
 } as const;
 
 export const categoryBucketErrors = {
