@@ -21,8 +21,8 @@ const errorFormatter: ErrorFormatter = (opts) => {
     return handleZodErrors(zodErrors, shape);
   }
 
-  if (error.cause?.name === 'ValidationError') {
-    return handleMongooseValidationErrors(error, shape);
+  if (error.cause?.name === 'PrismaClientKnownRequestError') {
+    return handlePrismaErrors(error, shape);
   }
 
   return shape;
@@ -60,50 +60,23 @@ function handleZodErrors(zodErrors: any, shape: DefaultErrorShape) {
   };
 }
 
-function handleMongooseValidationErrors(
-  error: TRPCError,
-  shape: DefaultErrorShape
-) {
-  const errorCodeNumber = TRPC_ERROR_CODES_BY_KEY['BAD_REQUEST'];
-  const errorCode = 'BAD_REQUEST';
+function handlePrismaErrors(error: any, shape: DefaultErrorShape) {
+  const errorCode = error.cause.code;
 
-  const errorMessages = error.message.replace('User validation failed: ', '');
-  const errorMessageArr = errorMessages.split(', ');
-
-  if (errorMessageArr.length === 1) {
-    const [errorMessage] = errorMessageArr;
-    const [property, message] = errorMessage.split(':');
-    const errorObj = { [property]: message.slice(1) };
+  /** Unique constraint failed on the {constraint} */
+  if (errorCode === 'P2002') {
     return {
       ...shape,
-      message: errorMessages,
-      code: errorCodeNumber,
+      code: TRPC_ERROR_CODES_BY_KEY['BAD_REQUEST'],
       data: {
         ...shape.data,
-        code: errorCode,
-        httpStatus: '400',
-        errors: errorObj,
+        code: 'BAD_REQUEST',
+        httpStatus: 400,
       },
     };
   }
 
-  const errorObj: { [key: string]: string } = {};
-  for (const errorMessage of errorMessageArr) {
-    const [property, message] = errorMessage.split(':');
-    errorObj[property] = message.slice(1);
-  }
-
-  return {
-    ...shape,
-    message: errorMessages,
-    code: errorCodeNumber,
-    data: {
-      ...shape.data,
-      code: errorCode,
-      httpStatus: '400',
-      errors: errorObj,
-    },
-  };
+  return shape;
 }
 
 export default errorFormatter;
