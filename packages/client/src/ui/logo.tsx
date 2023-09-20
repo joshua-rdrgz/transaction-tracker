@@ -21,7 +21,7 @@ export const Logo: React.FC<ILogoProps> = ({ figureClassName }) => {
 
   return (
     <figure className={cn('mx-auto', figureClassName)}>
-      <img src={src} className='w-full' />
+      <img src={src} alt='Logo of Budgetbook' className='w-full' />
     </figure>
   );
 };
