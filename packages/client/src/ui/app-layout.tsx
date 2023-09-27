@@ -8,9 +8,11 @@ export const AppLayout = () => {
     <div className='grid grid-cols-[13rem_1fr] grid-rows-[auto_1fr] h-screen'>
       <Header />
       <Sidebar />
-      <div className='overflow-scroll'>
-        <Outlet />
-      </div>
+      <main className='overflow-auto scrollb px-6 py-4'>
+        <div className='max-w-3xl mx-auto flex flex-col gap-6'>
+          <Outlet />
+        </div>
+      </main>
     </div>
   );
 };
