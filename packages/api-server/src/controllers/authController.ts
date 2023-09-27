@@ -10,12 +10,17 @@ import { authErrors } from '@/errorMessages';
 
 const TWO_WEEKS_IN_MS = 1000 * 60 * 60 * 24 * 7 * 2;
 
-const userWithNoPassword = <TUser extends {}>(
+const userWithoutSensitiveData = <TUser extends {}>(
   user: TUser
-): Omit<TUser, 'passwordHash'> => {
+): Omit<
+  TUser,
+  'passwordHash' | 'passwordResetToken' | 'passwordResetExpires'
+> => {
   const userNoPassword = {
     ...user,
     passwordHash: undefined,
+    passwordResetToken: undefined,
+    passwordResetExpires: undefined,
   };
   return userNoPassword;
 };
@@ -36,7 +41,9 @@ const sendAuthResponse = <TUser extends { [key: string]: any }>(
 
   return {
     status: 'success',
-    data: { user: userWithNoPassword(user as Exclude<typeof user, null>) },
+    data: {
+      user: userWithoutSensitiveData(user as Exclude<typeof user, null>),
+    },
   };
 };
 
@@ -63,7 +70,7 @@ const login = publicProcedure
   .input(zodSchemas.authRouteSchemas.login)
   .mutation(async (opts) => {
     const { ctx, input } = opts;
-    const user = await prismaUser.findUserCheckCredentials(input);
+    const user = await prismaUser.loginUser(input);
     return sendAuthResponse(user, ctx);
   });
 
@@ -74,7 +81,9 @@ const getCurrentUser = authProcedure.query(async (opts) => {
   });
   return {
     status: 'success',
-    data: { user: userWithNoPassword(user as Exclude<typeof user, null>) },
+    data: {
+      user: userWithoutSensitiveData(user as Exclude<typeof user, null>),
+    },
   };
 });
 
@@ -94,9 +103,22 @@ const updateCurrentUser = authProcedure
     return sendAuthResponse(user, ctx);
   });
 
+const updateCurrentUserPassword = authProcedure
+  .input(zodSchemas.authRouteSchemas.updateCurUserPassword)
+  .mutation(async (opts) => {
+    const { ctx, input } = opts;
+    const user = await prismaUser.updateUserPassword({
+      userId: ctx.user.id,
+      ...input,
+    });
+
+    return sendAuthResponse(user, ctx);
+  });
+
 export default {
   signup,
   login,
   getCurrentUser,
   updateCurrentUser,
+  updateCurrentUserPassword,
 };

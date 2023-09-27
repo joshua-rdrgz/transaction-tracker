@@ -9,41 +9,87 @@ import { authErrors } from '@/errorMessages';
 
 type SignupInput = z.infer<typeof sharedZodSchemas.authRouteSchemas.signup>;
 type LoginInput = z.infer<typeof sharedZodSchemas.authRouteSchemas.login>;
+type UpdatePasswordInput = z.infer<
+  typeof sharedZodSchemas.authRouteSchemas.updateCurUserPassword
+> & { userId: string };
 
 class PrismaUser {
   constructor(private readonly prismaUser: PrismaClient['user']) {}
 
+  // ****
+  // ROUTE FUNCTIONS
+
   async createUser(input: SignupInput): Promise<User> {
     const hashedPassword = await hashPassword(input.password);
-
     const data = {
       name: input.name,
       email: input.email,
       passwordHash: hashedPassword,
     };
-
     return await this.prismaUser.create({ data });
   }
 
-  async findUserCheckCredentials(input: LoginInput): Promise<User> {
+  async loginUser(input: LoginInput): Promise<User> {
     const user = await this.prismaUser.findUnique({
       where: { email: input.email },
     });
-
-    if (
-      !user ||
-      !(await verifyCorrectPassword(
-        input.password as string,
-        user.passwordHash
-      ))
-    ) {
-      throw new TRPCError({
+    const checkedUser = await this.checkUserCredentials(
+      user,
+      input.password as string,
+      {
         code: 'UNAUTHORIZED',
         message: authErrors.incorrectUserOrPassword,
-      });
-    }
-    return user;
+      }
+    );
+    return checkedUser;
   }
+
+  async updateUserPassword(input: UpdatePasswordInput): Promise<User> {
+    const user = await this.prismaUser.findUnique({
+      where: { id: input.userId },
+    });
+
+    const checkedUser = await this.checkUserCredentials(
+      user,
+      input.curPassword,
+      {
+        code: 'UNAUTHORIZED',
+        message: authErrors.notAllowedToChangePassword,
+      }
+    );
+
+    const updatedUser = await this.prismaUser.update({
+      where: { id: checkedUser.id },
+      data: {
+        passwordHash: await hashPassword(input.newPassword),
+      },
+    });
+
+    return updatedUser;
+  }
+
+  // ****
+  // UTILITY FUNCTIONS
+
+  private async checkUserCredentials(
+    user: User | null,
+    inputPassword: string,
+    trpcErrorToThrow: Omit<TRPCError, 'name'>
+  ): Promise<User> {
+    const userToCheck = { ...user } as User;
+    if (
+      !userToCheck ||
+      !(await verifyCorrectPassword(
+        inputPassword,
+        userToCheck.passwordHash as string
+      ))
+    ) {
+      throw new TRPCError(trpcErrorToThrow);
+    }
+    return userToCheck;
+  }
+
+  private async generatePasswordResetToken() {}
 }
 
 export default PrismaUser;

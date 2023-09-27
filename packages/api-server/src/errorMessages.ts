@@ -17,6 +17,8 @@ export const authErrors = {
     'You are not signed in and cannot access this resource.  Please log in to gain access.',
   emailAlreadyInUse:
     'This email is already in use.  Please try again with a different email.',
+  notAllowedToChangePassword:
+    'Your current password does not match the password in our records, so we cannot allow you to update your password.  Please try again.',
 } as const;
 
 export const categoryBucketErrors = {
