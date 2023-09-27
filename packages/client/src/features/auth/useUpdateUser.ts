@@ -2,14 +2,20 @@ import { trpc } from '@/config/trpc';
 import { toast } from 'react-hot-toast';
 
 export const useUpdateUser = () => {
-  const { isLoading, mutate } = trpc.updateCurrentUser.useMutation({
+  const utils = trpc.useContext();
+
+  const {
+    isLoading: isUpdatingUser,
+    mutate: updateUser,
+  } = trpc.updateCurrentUser.useMutation({
     onSuccess: () => {
+      utils.getCurrentUser.reset();
       toast.success('Successfully updated user.');
     },
   });
 
   return {
-    isUpdatingUser: isLoading,
-    updateUser: mutate,
+    isUpdatingUser,
+    updateUser,
   };
 };
