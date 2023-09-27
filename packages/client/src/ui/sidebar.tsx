@@ -35,7 +35,7 @@ export const Sidebar = () => {
           {NAV_ITEMS.map((navItem) => {
             const Icon = navItem.icon;
             return (
-              <li key={navItem.label} className='group/li'>
+              <li key={navItem.label} className='group/li shadow-sm'>
                 <NavLink
                   to={navItem.link}
                   className='flex gap-2 bg-background group-hover/li:bg-muted items-center rounded py-2 px-3 transition group/link'
