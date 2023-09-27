@@ -14,9 +14,9 @@ import { createExpressMiddleware } from '@trpc/server/adapters/express';
 
 import { setUpJwtStrategy } from '@/config/passport';
 import { createContext } from '@/config/trpc';
-import { upload } from '@/config/multer';
 
 import { appRouter } from '@/routes/appRouter';
+import avatarRouter from '@/routes/avatarRoutes';
 
 import OutsideTRPCError from '@/errors/outsideTRPCError';
 import globalErrorHandler from '@/errors/globalErrorHandler';
@@ -59,20 +59,7 @@ export default function() {
   /**
    * ROUTES
    */
-  app.post('/api/v1/upload', upload.single('avatar'), (req, res) => {
-    if (!req.file) {
-      return res.status(400).json({
-        status: 'fail',
-        message: 'No file provided.',
-      });
-    }
-
-    res.status(200).json({
-      status: 'success',
-      message: 'File Uploaded!',
-      imageName: req.file.path.split('/').pop(),
-    });
-  });
+  app.use('/api/v1/avatars', avatarRouter);
 
   app.use(
     '/api/v1/trpc',
