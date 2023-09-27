@@ -26,6 +26,7 @@ import { AppLayout } from '@/ui/app-layout';
 
 import Signup from '@/pages/Signup';
 import Login from '@/pages/Login';
+import Settings from '@/pages/Settings';
 import ErrorPage from '@/pages/Error';
 
 import './index.css';
@@ -89,7 +90,7 @@ const router = createBrowserRouter(
         <Route path='accounts' element={<div>Accounts</div>} />
         <Route path='budget' element={<div>Budget (Year)</div>} />
         <Route path='budget/:monthId' element={<div>Budget (Month)</div>} />
-        <Route path='settings' element={<div>Settings</div>} />
+        <Route path='settings' element={<Settings />} />
       </Route>
 
       {/* PUBLIC ROUTES */}
@@ -105,7 +106,7 @@ function App() {
       <trpc.Provider client={trpcClient} queryClient={queryClient}>
         <QueryClientProvider client={queryClient}>
           <RouterProvider router={router} />
-          <Toaster position='top-right' />
+          <Toaster position='top-center' />
           <ReactQueryDevtools initialIsOpen={false} />
         </QueryClientProvider>
       </trpc.Provider>
