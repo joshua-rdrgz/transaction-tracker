@@ -51,6 +51,17 @@ export default {
         )
         .optional(),
     }),
+    updateCurUserPassword: z.object({
+      curPassword: z.string().nonempty('Current password is required.'),
+      newPassword: z
+        .string()
+        .nonempty('New password is required')
+        .min(8, 'Password must be at least 8 characters.'),
+      newPasswordConfirm: z
+        .string()
+        .nonempty('New Password Confirm is required.')
+        .min(8, 'Password must be at least 8 characters.'),
+    }),
   },
   accountRouteSchemas: {
     createAccount: z.object({

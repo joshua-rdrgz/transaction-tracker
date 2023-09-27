@@ -47,6 +47,17 @@ exports.default = {
             }, 'Only .jpg, .jpeg, .png, and .webp files are accepted.')
                 .optional(),
         }),
+        updateCurUserPassword: zod_1.z.object({
+            curPassword: zod_1.z.string().nonempty('Current password is required.'),
+            newPassword: zod_1.z
+                .string()
+                .nonempty('New password is required')
+                .min(8, 'Password must be at least 8 characters.'),
+            newPasswordConfirm: zod_1.z
+                .string()
+                .nonempty('New Password Confirm is required.')
+                .min(8, 'Password must be at least 8 characters.'),
+        }),
     },
     accountRouteSchemas: {
         createAccount: zod_1.z.object({
