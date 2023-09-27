@@ -8,12 +8,12 @@ import ErrorPage from '@/pages/Error.tsx';
 import './index.css';
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <ErrorBoundary
-    FallbackComponent={ErrorPage}
-    onReset={() => window.location.replace('/login')}
-  >
-    <React.StrictMode>
+  <React.StrictMode>
+    <ErrorBoundary
+      FallbackComponent={ErrorPage}
+      onReset={() => window.location.replace('/login')}
+    >
       <App />
-    </React.StrictMode>
-  </ErrorBoundary>
+    </ErrorBoundary>
+  </React.StrictMode>
 );
