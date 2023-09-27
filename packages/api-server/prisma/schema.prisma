@@ -9,11 +9,13 @@ generator client {
 }
 
 model User {
-  id           String  @id @default(cuid())
-  name         String
-  email        String  @unique
-  passwordHash String
-  avatar       String?
+  id                   String    @id @default(cuid())
+  name                 String
+  email                String    @unique
+  passwordHash         String
+  avatar               String?
+  passwordResetToken   String?
+  passwordResetExpires DateTime?
 
   accounts     Account[]
   categories   Category[]
