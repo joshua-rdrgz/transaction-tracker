@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useUser } from '@/features/auth/useUser';
+import { useUser } from '@/features/auth/hooks/useUser';
 import { useEffect } from 'react';
 
 interface IProtectedRouteProps {

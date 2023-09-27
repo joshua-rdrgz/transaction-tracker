@@ -1,5 +1,5 @@
 import { AuthPageLayout } from '@/ui/auth-page-layout';
-import { SignupForm } from '@/features/auth/SignupForm';
+import { SignupForm } from '@/features/auth/forms/SignupForm';
 
 export default function SignupPage() {
   return (

@@ -1,5 +1,5 @@
-import { UpdateUserForm } from '@/features/auth/UpdateUserForm';
-import { UpdatePasswordForm } from '@/features/auth/UpdatePasswordForm';
+import { UpdateUserForm } from '@/features/auth/forms/UpdateUserForm';
+import { UpdatePasswordForm } from '@/features/auth/forms/UpdatePasswordForm';
 
 export default function SettingsPage() {
   return (

@@ -6,11 +6,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '@/ui/form';
 import { FormItem } from '@/ui/form-item';
 import { Button } from '@/ui/button';
-import { useUpdateUser } from '@/features/auth/useUpdateUser';
-import { useUser } from '@/features/auth/useUser';
+import { useUpdateUser } from '@/features/auth/hooks/useUpdateUser';
+import { useUser } from '@/features/auth/hooks/useUser';
 import { toast } from 'react-hot-toast';
-import { useUploadUserAvatar } from './useUploadUserAvatar';
-import { useDeleteUserAvatar } from './useDeleteUserAvatar';
+import { useUploadUserAvatar } from '../hooks/useUploadUserAvatar';
+import { useDeleteUserAvatar } from '../hooks/useDeleteUserAvatar';
 
 const updateUserSchema = sharedZodSchemas.authRouteSchemas.updateCurrentUser;
 type UpdateUserSchema = z.infer<typeof updateUserSchema>;

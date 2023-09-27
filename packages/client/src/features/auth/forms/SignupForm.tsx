@@ -1,20 +1,23 @@
 import { useCallback } from 'react';
 import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { z } from 'zod';
 import zodSchemas from 'shared-zod-schemas';
-
-import { useLogin } from '@/features/auth/useLogin';
+import { useSignup } from '@/features/auth/hooks/useSignup';
 
 import { Form } from '@/ui/form';
 import { FormItem } from '@/ui/form-item';
 import { Button } from '@/ui/button';
 
-const loginFormSchema = zodSchemas.authRouteSchemas.login;
-type LoginFormSchema = z.infer<typeof loginFormSchema>;
+const signupFormSchema = zodSchemas.authRouteSchemas.signup;
+type SignupFormSchema = z.infer<typeof signupFormSchema>;
 
-const loginInputs = [
+const signupInputs = [
+  {
+    value: 'name' as const,
+    label: 'Name',
+  },
   {
     value: 'email' as const,
     label: 'Email',
@@ -26,37 +29,46 @@ const loginInputs = [
       type: 'password',
     },
   },
+  {
+    value: 'passwordConfirm' as const,
+    label: 'Confirm Password',
+    props: {
+      type: 'password',
+    },
+  },
 ];
 
-export const LoginForm = () => {
-  const { isLoggingIn, login } = useLogin();
-  const loginForm = useForm<LoginFormSchema>({
-    resolver: zodResolver(loginFormSchema),
+export const SignupForm = () => {
+  const { isSigningUp, signup } = useSignup();
+  const signupForm = useForm<SignupFormSchema>({
+    resolver: zodResolver(signupFormSchema),
     defaultValues: {
+      name: '',
       email: '',
       password: '',
+      passwordConfirm: '',
     },
     mode: 'onChange',
   });
 
   const onSubmit = useCallback(
-    async (values: LoginFormSchema) => {
-      login(values, {
-        onSettled: () => loginForm.reset(),
+    (values: SignupFormSchema) => {
+      signup(values, {
+        onSettled: () => signupForm.reset(),
       });
     },
-    [login]
+    [signup]
   );
 
   return (
-    <Form form={loginForm}>
-      <form onSubmit={loginForm.handleSubmit(onSubmit)} className='space-y-3'>
-        {loginInputs.map((input) => (
+    <Form form={signupForm}>
+      <form onSubmit={signupForm.handleSubmit(onSubmit)} className='space-y-3'>
+        {signupInputs.map((input) => (
           <Form.Field
             key={input.value}
-            control={loginForm.control}
+            control={signupForm.control}
             name={input.value}
-            disabled={isLoggingIn}
+            disabled={isSigningUp}
             render={({ field }) => {
               return (
                 <FormItem
@@ -69,7 +81,7 @@ export const LoginForm = () => {
           />
         ))}
 
-        <Button>Log in</Button>
+        <Button>Sign Up</Button>
       </form>
     </Form>
   );

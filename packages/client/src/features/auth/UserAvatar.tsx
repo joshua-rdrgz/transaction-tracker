@@ -1,4 +1,4 @@
-import { useUser } from '@/features/auth/useUser';
+import { useUser } from '@/features/auth/hooks/useUser';
 
 export const UserAvatar = () => {
   const { user } = useUser();
