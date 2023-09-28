@@ -23,11 +23,11 @@ model User {
 }
 
 model Account {
-  id             String  @id @default(cuid())
-  userId         String
-  name           String
-  bank           String
-  initialBalance Decimal
+  id      String  @id @default(cuid())
+  userId  String
+  name    String
+  bank    String
+  balance Decimal
 
   transactions Transaction[]
 
