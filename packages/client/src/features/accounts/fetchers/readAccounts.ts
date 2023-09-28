@@ -6,10 +6,11 @@ const query = {
   queryFn: async () => await trpcVanillaClient.accounts.readAccounts.query(),
 };
 
+type ReturnTypeQueryFn = ReturnType<typeof query.queryFn>;
+
 export const readAccountsLoader = (queryClient: QueryClient) => async () => {
   return (
-    queryClient.getQueryData<ReturnType<typeof query.queryFn>>(
-      query.queryKey
-    ) ?? (await queryClient.fetchQuery<ReturnType<typeof query.queryFn>>(query))
+    queryClient.getQueryData<ReturnTypeQueryFn>(query.queryKey) ??
+    (await queryClient.fetchQuery<ReturnTypeQueryFn>(query))
   );
 };
