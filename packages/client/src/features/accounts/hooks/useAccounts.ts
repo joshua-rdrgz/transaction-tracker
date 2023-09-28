@@ -1,10 +1,11 @@
+import { useLoaderData } from 'react-router-dom';
 import { trpc } from '@/config/trpc';
 import { readAccountsLoader } from '@/features/accounts/fetchers/readAccounts';
-import { useLoaderData } from 'react-router-dom';
+import { ReturnTypeLoader } from '@/lib/utils';
 
 export const useAccounts = () => {
-  const initialData = useLoaderData() as Awaited<
-    ReturnType<ReturnType<typeof readAccountsLoader>>
+  const initialData = useLoaderData() as ReturnTypeLoader<
+    typeof readAccountsLoader
   >;
 
   const {
