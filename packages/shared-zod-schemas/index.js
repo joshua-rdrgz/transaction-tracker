@@ -63,9 +63,7 @@ exports.default = {
         createAccount: zod_1.z.object({
             name: zod_1.z.string().nonempty('Name is required.'),
             bank: zod_1.z.string().nonempty('Bank is required.'),
-            initialBalance: zod_1.z.coerce.number({
-                required_error: 'Balance is required.',
-            }),
+            balance: zod_1.z.coerce.number(),
         }),
         readAccount: zod_1.z.string().nonempty('Account ID is required.'),
         updateAccount: zod_1.z.object({
@@ -73,7 +71,7 @@ exports.default = {
             data: zod_1.z.object({
                 name: zod_1.z.string().optional(),
                 bank: zod_1.z.string().optional(),
-                initialBalance: zod_1.z.number().optional(),
+                balance: zod_1.z.coerce.number().optional(),
             }),
         }),
         deleteAccount: zod_1.z.string().nonempty('Account ID is required.'),

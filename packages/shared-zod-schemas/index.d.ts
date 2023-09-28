@@ -65,15 +65,15 @@ declare const _default: {
         createAccount: z.ZodObject<{
             name: z.ZodString;
             bank: z.ZodString;
-            initialBalance: z.ZodNumber;
+            balance: z.ZodNumber;
         }, "strip", z.ZodTypeAny, {
             name: string;
             bank: string;
-            initialBalance: number;
+            balance: number;
         }, {
             name: string;
             bank: string;
-            initialBalance: number;
+            balance: number;
         }>;
         readAccount: z.ZodString;
         updateAccount: z.ZodObject<{
@@ -81,29 +81,29 @@ declare const _default: {
             data: z.ZodObject<{
                 name: z.ZodOptional<z.ZodString>;
                 bank: z.ZodOptional<z.ZodString>;
-                initialBalance: z.ZodOptional<z.ZodNumber>;
+                balance: z.ZodOptional<z.ZodNumber>;
             }, "strip", z.ZodTypeAny, {
                 name?: string | undefined;
                 bank?: string | undefined;
-                initialBalance?: number | undefined;
+                balance?: number | undefined;
             }, {
                 name?: string | undefined;
                 bank?: string | undefined;
-                initialBalance?: number | undefined;
+                balance?: number | undefined;
             }>;
         }, "strip", z.ZodTypeAny, {
             accountId: string;
             data: {
                 name?: string | undefined;
                 bank?: string | undefined;
-                initialBalance?: number | undefined;
+                balance?: number | undefined;
             };
         }, {
             accountId: string;
             data: {
                 name?: string | undefined;
                 bank?: string | undefined;
-                initialBalance?: number | undefined;
+                balance?: number | undefined;
             };
         }>;
         deleteAccount: z.ZodString;

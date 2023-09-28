@@ -67,9 +67,7 @@ export default {
     createAccount: z.object({
       name: z.string().nonempty('Name is required.'),
       bank: z.string().nonempty('Bank is required.'),
-      initialBalance: z.coerce.number({
-        required_error: 'Balance is required.',
-      }),
+      balance: z.coerce.number(),
     }),
     readAccount: z.string().nonempty('Account ID is required.'),
     updateAccount: z.object({
@@ -77,7 +75,7 @@ export default {
       data: z.object({
         name: z.string().optional(),
         bank: z.string().optional(),
-        initialBalance: z.number().optional(),
+        balance: z.coerce.number().optional(),
       }),
     }),
     deleteAccount: z.string().nonempty('Account ID is required.'),
