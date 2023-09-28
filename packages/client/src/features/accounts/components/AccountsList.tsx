@@ -2,6 +2,7 @@ import { useAccounts } from '@/features/accounts/hooks/useAccounts';
 import { DataTable } from '@/ui/data-table';
 import { ColumnDef } from '@tanstack/react-table';
 import { Prisma } from '@prisma/client';
+import { AccountsDropdown } from '@/features/accounts/components/AccountsDropdown';
 
 const accountColumns: ColumnDef<Prisma.AccountCreateManyInput>[] = [
   {
@@ -27,11 +28,21 @@ const accountColumns: ColumnDef<Prisma.AccountCreateManyInput>[] = [
       return <div className='text-right font-medium'>{formatted}</div>;
     },
   },
+  {
+    id: 'actions',
+    cell: ({ row }) => {
+      return (
+        <div className='text-right'>
+          <AccountsDropdown accountId={row.original.id as string} />
+        </div>
+      );
+    },
+  },
 ];
 
 export function AccountsList() {
   const accounts = useAccounts();
-  console.log('accounts: ', accounts);
+
   return (
     <div>
       <DataTable columns={accountColumns} data={accounts} />
