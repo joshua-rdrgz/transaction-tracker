@@ -26,6 +26,7 @@ import Login from '@/pages/Login';
 import AccountsPage from '@/pages/Accounts';
 import SettingsPage from '@/pages/Settings';
 import ErrorPage from '@/pages/Error';
+import NotFoundPage from '@/pages/NotFound';
 
 import './index.css';
 
@@ -64,6 +65,7 @@ const router = createBrowserRouter(
       {/* PUBLIC ROUTES */}
       <Route path='signup' element={<Signup />} />
       <Route path='login' element={<Login />} />
+      <Route path='*' element={<NotFoundPage />} />
     </Route>
   )
 );
