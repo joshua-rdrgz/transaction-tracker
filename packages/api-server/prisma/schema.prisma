@@ -61,6 +61,7 @@ model CategoryBucket {
 
 model Target {
   date       DateTime
+  target     Int
   categoryId String
 
   category Category @relation(fields: [categoryId], references: [id])
