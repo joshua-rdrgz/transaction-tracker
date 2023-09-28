@@ -17,6 +17,7 @@ import { queryClient } from '@/config/queryClient';
 import { trpcReactClient, TRPCProvider } from '@/config/trpc';
 
 import { readAccountsLoader } from '@/features/accounts/fetchers/readAccounts';
+import { currentUserLoader } from '@/features/auth/fetchers/currentUser';
 
 import { ProtectedRoute } from '@/features/auth/ProtectedRoute';
 import { AppLayout } from '@/ui/app-layout';
@@ -44,6 +45,7 @@ const router = createBrowserRouter(
     >
       {/* PROTECTED ROUTES */}
       <Route
+        loader={currentUserLoader(queryClient)}
         element={
           <ProtectedRoute>
             <AppLayout />
