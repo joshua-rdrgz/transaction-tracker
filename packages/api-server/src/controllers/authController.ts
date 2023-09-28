@@ -74,6 +74,15 @@ const login = publicProcedure
     return sendAuthResponse(user, ctx);
   });
 
+const logout = authProcedure.mutation(async (opts) => {
+  opts.ctx.res.clearCookie('jwtToken');
+
+  return {
+    status: 'success',
+    message: 'See you next time!',
+  };
+});
+
 const getCurrentUser = authProcedure.query(async (opts) => {
   const { ctx } = opts;
   const user = await prisma.user.findUnique({
@@ -118,6 +127,7 @@ const updateCurrentUserPassword = authProcedure
 export default {
   signup,
   login,
+  logout,
   getCurrentUser,
   updateCurrentUser,
   updateCurrentUserPassword,
