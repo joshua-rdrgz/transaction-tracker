@@ -20,13 +20,51 @@ class PrismaUser {
   // ROUTE FUNCTIONS
 
   async createUser(input: SignupInput): Promise<User> {
-    const hashedPassword = await hashPassword(input.password);
-    const data = {
-      name: input.name,
-      email: input.email,
-      passwordHash: hashedPassword,
-    };
-    return await this.prismaUser.create({ data });
+    return await this.prismaUser.create({
+      data: {
+        name: input.name,
+        email: input.email,
+        passwordHash: await hashPassword(input.password),
+        accounts: {
+          create: [
+            {
+              name: 'Initial Account',
+              bank: 'Initial Bank',
+              initialBalance: 0,
+            },
+          ],
+        },
+        categories: {
+          create: [
+            {
+              name: 'Initial Category',
+              categoryBucket: {
+                create: {
+                  name: 'Initial Category Bucket',
+                },
+              },
+              targets: {
+                create: [
+                  {
+                    date: new Date(),
+                    target: 0,
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      },
+      include: {
+        accounts: true,
+        categories: {
+          include: {
+            categoryBucket: true,
+            targets: true,
+          },
+        },
+      },
+    });
   }
 
   async loginUser(input: LoginInput): Promise<User> {
