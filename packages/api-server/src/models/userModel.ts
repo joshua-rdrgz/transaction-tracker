@@ -30,7 +30,7 @@ class PrismaUser {
             {
               name: 'Initial Account',
               bank: 'Initial Bank',
-              initialBalance: 0,
+              balance: 0,
             },
           ],
         },
