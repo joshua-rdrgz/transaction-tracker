@@ -122,10 +122,11 @@ const DialogItem = React.forwardRef<
     children,
     onSelect,
     onOpenChange,
+    open,
     ...itemProps
   } = props;
   return (
-    <Dialog onOpenChange={onOpenChange}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
         <DropdownMenuItem
           {...itemProps}
