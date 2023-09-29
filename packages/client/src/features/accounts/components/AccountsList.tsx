@@ -17,7 +17,7 @@ const accountColumns: ColumnDef<Prisma.AccountCreateManyInput>[] = [
   },
   {
     accessorKey: 'balance',
-    header: () => <div className='text-right'>Account Balance</div>,
+    header: () => <div className='text-right'>INITIAL Balance</div>,
     cell: ({ row }) => {
       const balance = parseFloat(row.getValue('balance'));
       const formatted = new Intl.NumberFormat('en-US', {
