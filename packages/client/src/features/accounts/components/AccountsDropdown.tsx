@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MoreHorizontal } from 'lucide-react';
 import { UpdateAccountForm } from '@/features/accounts/components/UpdateAccountForm';
@@ -21,6 +22,8 @@ interface IAccountsDropDownProps {
 export const AccountsDropdown: React.FC<IAccountsDropDownProps> = ({
   accountId,
 }) => {
+  const [updateDialogOpen, setUpdateDialogOpen] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const navigate = useNavigate();
 
   return (
@@ -36,12 +39,26 @@ export const AccountsDropdown: React.FC<IAccountsDropDownProps> = ({
           🔍 See Details
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DialogItem triggerChildren='✏️ Edit'>
-          <DialogFormContent formToRender={UpdateAccountForm} />
+        <DialogItem
+          triggerChildren='✏️ Edit'
+          open={updateDialogOpen}
+          onOpenChange={setUpdateDialogOpen}
+        >
+          <DialogFormContent
+            formToRender={UpdateAccountForm}
+            formProps={{ accountId, setUpdateDialogOpen }}
+          />
         </DialogItem>
-        <DialogItem triggerChildren='🗑️ Delete'>
+        <DialogItem
+          triggerChildren='🗑️ Delete'
+          open={deleteDialogOpen}
+          onOpenChange={setDeleteDialogOpen}
+        >
           <DialogDeleteContent
-            handleDeleteAccount={() => console.log('delete account')}
+            handleDeleteAccount={() => {
+              console.log('delete account');
+              setDeleteDialogOpen(false);
+            }}
           />
         </DialogItem>
       </DropdownMenuContent>
