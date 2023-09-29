@@ -11,7 +11,7 @@ type ReturnTypeQueryFn = ReturnType<typeof query.queryFn>;
 
 export const accountsPageLoader = (
   queryClient: QueryClient
-): LoaderFunction => async () => {
+): LoaderFunction<ReturnTypeQueryFn> => async () => {
   return (
     queryClient.getQueryData<ReturnTypeQueryFn>(query.queryKey) ??
     (await queryClient.fetchQuery<ReturnTypeQueryFn>(query))
