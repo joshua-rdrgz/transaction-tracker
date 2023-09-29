@@ -12,10 +12,12 @@ interface IFormDialogContentProps {
   formToRender: React.ForwardRefExoticComponent<
     React.RefAttributes<HTMLButtonElement>
   >;
+  formProps?: any;
 }
 
 export const DialogFormContent = ({
   formToRender: FormToRender,
+  formProps,
 }: IFormDialogContentProps) => {
   const submitBtnRef = useRef<HTMLButtonElement>(null);
 
@@ -27,7 +29,7 @@ export const DialogFormContent = ({
           Please choose a new name or bank, or initial balance!
         </DialogDescription>
       </DialogHeader>
-      {<FormToRender ref={submitBtnRef} />}
+      {<FormToRender ref={submitBtnRef} {...formProps} />}
       <DialogFooter>
         <Button variant='outline' asChild>
           <DialogClose>Cancel</DialogClose>
