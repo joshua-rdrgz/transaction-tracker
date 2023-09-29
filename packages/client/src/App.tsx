@@ -16,7 +16,7 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { queryClient } from '@/config/queryClient';
 import { trpcReactClient, TRPCProvider } from '@/config/trpc';
 
-import { readAccountsLoader } from '@/features/accounts/fetchers/readAccounts';
+import { accountsPageLoader } from '@/features/accounts/fetchers/accountsPage';
 import { currentUserLoader } from '@/features/auth/fetchers/currentUser';
 
 import { ProtectedRoute } from '@/features/auth/ProtectedRoute';
@@ -56,7 +56,7 @@ const router = createBrowserRouter(
         <Route path='dashboard' element={<div>Dashboard / Home</div>} />
         <Route
           path='accounts'
-          loader={readAccountsLoader(queryClient)}
+          loader={accountsPageLoader(queryClient)}
           element={<AccountsPage />}
         />
         <Route path='budget' element={<div>Budget (Year)</div>} />
