@@ -16,13 +16,12 @@ const userWithoutSensitiveData = <TUser extends {}>(
   TUser,
   'passwordHash' | 'passwordResetToken' | 'passwordResetExpires'
 > => {
-  const userNoPassword = {
+  return {
     ...user,
     passwordHash: undefined,
     passwordResetToken: undefined,
     passwordResetExpires: undefined,
   };
-  return userNoPassword;
 };
 
 const sendAuthResponse = <TUser extends { [key: string]: any }>(
