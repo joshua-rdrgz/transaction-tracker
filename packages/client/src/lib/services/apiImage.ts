@@ -28,8 +28,6 @@ export const deleteAvatarFromBucket = async (key: string) => {
     method: 'DELETE',
   });
 
-  console.log('res: ', res);
-
   if (!res.ok)
     throw new TRPCClientError('Something went wrong deleting your avatar!');
 
