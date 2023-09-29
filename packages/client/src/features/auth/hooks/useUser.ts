@@ -14,6 +14,7 @@ export const useUser = () => {
       data: { user },
     },
   } = trpc.getCurrentUser.useQuery(undefined, {
+    // @ts-ignore (initialData will never be null)
     initialData,
   });
 
