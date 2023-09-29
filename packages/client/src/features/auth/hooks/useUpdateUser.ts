@@ -9,7 +9,7 @@ export const useUpdateUser = () => {
     mutate: updateUser,
   } = trpc.updateCurrentUser.useMutation({
     onSuccess: () => {
-      utils.getCurrentUser.reset();
+      utils.getCurrentUser.invalidate();
       toast.success('Successfully updated user.');
     },
   });
