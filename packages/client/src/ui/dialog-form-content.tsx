@@ -8,34 +8,42 @@ import {
 import { Button } from '@/ui/button';
 import { DialogClose } from '@radix-ui/react-dialog';
 
-interface IFormDialogContentProps {
+interface IDialogFormContentProps {
   formToRender: React.ForwardRefExoticComponent<
     React.RefAttributes<HTMLButtonElement>
   >;
   formProps?: any;
+  dialogTitle: string;
+  actionBtnText: string;
+  dialogDescription?: string;
+  cancelBtnText?: string;
 }
 
 export const DialogFormContent = ({
   formToRender: FormToRender,
   formProps,
-}: IFormDialogContentProps) => {
+  dialogTitle,
+  actionBtnText,
+  dialogDescription,
+  cancelBtnText = 'Cancel',
+}: IDialogFormContentProps) => {
   const submitBtnRef = useRef<HTMLButtonElement>(null);
 
   return (
     <>
       <DialogHeader>
-        <DialogTitle>Edit Your Account</DialogTitle>
-        <DialogDescription>
-          Please choose a new name or bank, or initial balance!
-        </DialogDescription>
+        <DialogTitle>{dialogTitle}</DialogTitle>
+        {dialogDescription && (
+          <DialogDescription>{dialogDescription}</DialogDescription>
+        )}
       </DialogHeader>
       {<FormToRender ref={submitBtnRef} {...formProps} />}
       <DialogFooter>
         <Button variant='outline' asChild>
-          <DialogClose>Cancel</DialogClose>
+          <DialogClose>{cancelBtnText}</DialogClose>
         </Button>
         <Button type='submit' onClick={() => submitBtnRef.current?.click()}>
-          Edit Account
+          {actionBtnText}
         </Button>
       </DialogFooter>
     </>
