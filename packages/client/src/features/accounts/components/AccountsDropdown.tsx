@@ -21,7 +21,7 @@ export const AccountsDropdown: React.FC<IAccountsDropDownProps> = ({
 
   return (
     <TableDropdown open={dropdownOpen} onOpenChange={setDropdownOpen}>
-      <DropdownMenuItem onClick={() => navigate(`accounts/${accountId}`)}>
+      <DropdownMenuItem onClick={() => navigate(`/accounts/${accountId}`)}>
         🔍 See Details
       </DropdownMenuItem>
       <DropdownMenuSeparator />
