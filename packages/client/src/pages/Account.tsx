@@ -1,4 +1,4 @@
-import { useAccount } from '@/features/account/hooks/useAccount';
+import { useAccount } from '@/features/accounts/hooks/useAccount';
 import { useParams } from 'react-router-dom';
 
 export default function AccountPage() {
