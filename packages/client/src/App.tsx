@@ -16,15 +16,14 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { queryClient } from '@/config/queryClient';
 import { trpcReactClient, TRPCProvider } from '@/config/trpc';
 
-import { accountsPageLoader } from '@/features/accounts/fetchers/accountsPage';
-import { currentUserLoader } from '@/features/auth/fetchers/currentUser';
-
 import { ProtectedRoute } from '@/features/auth/ProtectedRoute';
 import { AppLayout } from '@/ui/app-layout';
+import { currentUserLoader } from '@/pages/loaders/currentUserLoader';
 
 import Signup from '@/pages/Signup';
 import Login from '@/pages/Login';
 import AccountsPage from '@/pages/Accounts';
+import { accountsPageLoader } from '@/pages/loaders/accountsPageLoader';
 import SettingsPage from '@/pages/Settings';
 import ErrorPage from '@/pages/Error';
 import NotFoundPage from '@/pages/NotFound';
