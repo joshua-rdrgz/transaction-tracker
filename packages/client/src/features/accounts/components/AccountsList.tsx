@@ -3,6 +3,7 @@ import { DataTable } from '@/ui/data-table';
 import { ColumnDef } from '@tanstack/react-table';
 import { Prisma } from '@prisma/client';
 import { AccountsDropdown } from '@/features/accounts/components/AccountsDropdown';
+import { CreateAccount } from '@/features/accounts/components/CreateAccount';
 
 const accountColumns: ColumnDef<Prisma.AccountCreateManyInput>[] = [
   {
@@ -44,8 +45,15 @@ export function AccountsList() {
   const accounts = useAccounts();
 
   return (
-    <div>
-      <DataTable columns={accountColumns} data={accounts} />
+    <div className='flex flex-col gap-6'>
+      <DataTable
+        columns={accountColumns}
+        data={accounts}
+        noResultsText='No accounts.  Please add one!'
+      />
+      <div className='ml-auto'>
+        <CreateAccount />
+      </div>
     </div>
   );
 }
