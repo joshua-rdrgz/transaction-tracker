@@ -9,7 +9,7 @@ const createAccount = authProcedure
   .input(zodSchemas.accountRouteSchemas.createAccount)
   .mutation(async (opts) => {
     const { ctx, input } = opts;
-    const account = prisma.account.create({
+    const account = await prisma.account.create({
       data: {
         userId: ctx.user.id,
         ...input,
