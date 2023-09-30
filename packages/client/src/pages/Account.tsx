@@ -5,12 +5,10 @@ export default function AccountPage() {
   const { accountId } = useParams();
   const { account } = useAccount(accountId as string);
 
-  console.log('account: ', account);
-
   return (
     <section>
       <div>Account Page</div>
-      <div>Account: {accountId}</div>
+      <div>Account: {account.id}</div>
     </section>
   );
 }
