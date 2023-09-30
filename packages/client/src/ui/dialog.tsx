@@ -113,7 +113,7 @@ interface IDialogItemProps {
   onSelect?(): any;
 }
 
-const DialogItem = React.forwardRef<
+const DialogDropdownItem = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Root>,
   IDialogItemProps & React.ComponentPropsWithRef<typeof DialogPrimitive.Root>
 >((props, forwardedRef) => {
@@ -131,7 +131,6 @@ const DialogItem = React.forwardRef<
         <DropdownMenuItem
           {...itemProps}
           ref={forwardedRef}
-          className='DropdownMenuItem'
           onSelect={(event) => {
             event.preventDefault();
             onSelect && onSelect();
@@ -148,6 +147,22 @@ const DialogItem = React.forwardRef<
   );
 });
 
+const DialogItem = React.forwardRef<
+  React.ElementRef<typeof DialogPrimitive.Root>,
+  IDialogItemProps & React.ComponentPropsWithRef<typeof DialogPrimitive.Root>
+>((props, _) => {
+  const { triggerChildren, children, onOpenChange, open } = props;
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogTrigger asChild>{triggerChildren}</DialogTrigger>
+      <DialogPortal>
+        <DialogOverlay />
+        <DialogContent>{children}</DialogContent>
+      </DialogPortal>
+    </Dialog>
+  );
+});
+
 export {
   Dialog,
   DialogTrigger,
@@ -156,5 +171,6 @@ export {
   DialogFooter,
   DialogTitle,
   DialogDescription,
+  DialogDropdownItem,
   DialogItem,
 };
