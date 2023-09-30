@@ -24,6 +24,8 @@ import Signup from '@/pages/Signup';
 import Login from '@/pages/Login';
 import AccountsPage from '@/pages/Accounts';
 import { accountsPageLoader } from '@/pages/loaders/accountsPageLoader';
+import AccountPage from '@/pages/Account';
+import { accountPageLoader } from '@/pages/loaders/accountPageLoader';
 import SettingsPage from '@/pages/Settings';
 import ErrorPage from '@/pages/Error';
 import NotFoundPage from '@/pages/NotFound';
@@ -57,6 +59,11 @@ const router = createBrowserRouter(
           path='accounts'
           loader={accountsPageLoader(queryClient)}
           element={<AccountsPage />}
+        />
+        <Route
+          path='accounts/:accountId'
+          loader={accountPageLoader(queryClient)}
+          element={<AccountPage />}
         />
         <Route path='budget' element={<div>Budget (Year)</div>} />
         <Route path='budget/:monthId' element={<div>Budget (Month)</div>} />
