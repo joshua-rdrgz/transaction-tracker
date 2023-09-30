@@ -1,6 +1,6 @@
 import { useLoaderData } from 'react-router-dom';
 import { trpc } from '@/config/trpc';
-import { currentUserLoader } from '@/features/auth/fetchers/currentUser';
+import { currentUserLoader } from '@/pages/loaders/currentUserLoader';
 import { ReturnTypeLoader } from '@/lib/utils';
 
 export const useUser = () => {

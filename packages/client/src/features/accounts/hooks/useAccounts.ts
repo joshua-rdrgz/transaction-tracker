@@ -1,6 +1,6 @@
 import { useLoaderData } from 'react-router-dom';
 import { trpc } from '@/config/trpc';
-import { accountsPageLoader } from '@/features/accounts/fetchers/accountsPage';
+import { accountsPageLoader } from '@/pages/loaders/accountsPageLoader';
 import { ReturnTypeLoader } from '@/lib/utils';
 
 export const useAccounts = () => {
