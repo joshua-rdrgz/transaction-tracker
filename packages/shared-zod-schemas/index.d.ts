@@ -108,5 +108,52 @@ declare const _default: {
         }>;
         deleteAccount: z.ZodString;
     };
+    categoryRouteSchemas: {
+        getCategory: z.ZodString;
+        getCategories: z.ZodOptional<z.ZodObject<{
+            categoryBucket: z.ZodOptional<z.ZodString>;
+            transactionIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
+        }, "strip", z.ZodTypeAny, {
+            categoryBucket?: string | undefined;
+            transactionIds?: string[] | undefined;
+        }, {
+            categoryBucket?: string | undefined;
+            transactionIds?: string[] | undefined;
+        }>>;
+    };
+    transactionRouteSchemas: {
+        createTransaction: z.ZodObject<{
+            date: z.ZodDate;
+            contact: z.ZodString;
+            description: z.ZodString;
+            category: z.ZodString;
+            amount: z.ZodNumber;
+            account: z.ZodString;
+        }, "strip", z.ZodTypeAny, {
+            date: Date;
+            contact: string;
+            description: string;
+            category: string;
+            amount: number;
+            account: string;
+        }, {
+            date: Date;
+            contact: string;
+            description: string;
+            category: string;
+            amount: number;
+            account: string;
+        }>;
+        getTransactions: z.ZodOptional<z.ZodObject<{
+            accountId: z.ZodOptional<z.ZodString>;
+            categoryId: z.ZodOptional<z.ZodString>;
+        }, "strip", z.ZodTypeAny, {
+            accountId?: string | undefined;
+            categoryId?: string | undefined;
+        }, {
+            accountId?: string | undefined;
+            categoryId?: string | undefined;
+        }>>;
+    };
 };
 export default _default;

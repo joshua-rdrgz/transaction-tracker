@@ -76,4 +76,29 @@ exports.default = {
         }),
         deleteAccount: zod_1.z.string().nonempty('Account ID is required.'),
     },
+    categoryRouteSchemas: {
+        getCategory: zod_1.z.string().nonempty('Category ID is required.'),
+        getCategories: zod_1.z
+            .object({
+            categoryBucket: zod_1.z.string().optional(),
+            transactionIds: zod_1.z.array(zod_1.z.string()).optional(),
+        })
+            .optional(),
+    },
+    transactionRouteSchemas: {
+        createTransaction: zod_1.z.object({
+            date: zod_1.z.coerce.date(),
+            contact: zod_1.z.string().nonempty('Contact required.'),
+            description: zod_1.z.string().nonempty('Description required.'),
+            category: zod_1.z.string().nonempty('Category required.'),
+            amount: zod_1.z.coerce.number(),
+            account: zod_1.z.string().nonempty('Account required.'),
+        }),
+        getTransactions: zod_1.z
+            .object({
+            accountId: zod_1.z.string().optional(),
+            categoryId: zod_1.z.string().optional(),
+        })
+            .optional(),
+    },
 };

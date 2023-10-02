@@ -80,4 +80,29 @@ export default {
     }),
     deleteAccount: z.string().nonempty('Account ID is required.'),
   },
+  categoryRouteSchemas: {
+    getCategory: z.string().nonempty('Category ID is required.'),
+    getCategories: z
+      .object({
+        categoryBucket: z.string().optional(),
+        transactionIds: z.array(z.string()).optional(),
+      })
+      .optional(),
+  },
+  transactionRouteSchemas: {
+    createTransaction: z.object({
+      date: z.coerce.date(),
+      contact: z.string().nonempty('Contact required.'),
+      description: z.string().nonempty('Description required.'),
+      category: z.string().nonempty('Category required.'),
+      amount: z.coerce.number(),
+      account: z.string().nonempty('Account required.'),
+    }),
+    getTransactions: z
+      .object({
+        accountId: z.string().optional(),
+        categoryId: z.string().optional(),
+      })
+      .optional(),
+  },
 };
