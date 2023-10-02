@@ -47,6 +47,7 @@ export function AccountsList() {
         columns={accountColumns}
         data={accounts}
         noResultsText='No accounts.  Please add one!'
+        defaultPageSize={5}
       />
       <div className='ml-auto'>
         <CreateAccount />

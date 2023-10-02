@@ -76,6 +76,7 @@ export function TransactionsList({ filters }: ITransactionsListProps) {
         data={transactions || []}
         isLoading={isLoadingTransactions || isLoadingCategories}
         noResultsText='No transactions.  Add one to get started!'
+        defaultPageSize={5}
       />
       <div className='ml-auto'>
         <CreateTransaction page='account' id={filters?.accountId as string} />
