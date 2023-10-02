@@ -4,12 +4,14 @@ interface ISpinnerProps {
   size: number;
   fullScreen?: boolean;
   colorOveride?: string;
+  className?: string;
 }
 
 export const Spinner: React.FC<ISpinnerProps> = ({
   size,
   fullScreen,
   colorOveride,
+  className,
 }) => {
   if (fullScreen)
     return (
@@ -17,11 +19,16 @@ export const Spinner: React.FC<ISpinnerProps> = ({
         <BeatLoader
           size={size}
           color={colorOveride ? colorOveride : '#883d1a'}
+          className={className}
         />
       </main>
     );
 
   return (
-    <BeatLoader size={size} color={colorOveride ? colorOveride : '#883d1a'} />
+    <BeatLoader
+      size={size}
+      color={colorOveride ? colorOveride : '#883d1a'}
+      className={className}
+    />
   );
 };
