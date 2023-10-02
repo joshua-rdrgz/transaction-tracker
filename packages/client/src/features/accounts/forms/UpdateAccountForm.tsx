@@ -4,7 +4,7 @@ import { z } from 'zod';
 import sharedZodSchemas from 'shared-zod-schemas';
 import { useUpdateAccount } from '@/features/accounts/hooks/useUpdateAccount';
 import { toast } from 'react-hot-toast';
-import { IDialogAccountFormProps } from '@/features/accounts/forms/types';
+import { IDialogFormPropsReceivesAccount } from '@/lib/types';
 import { DialogForm } from '@/ui/dialog-form';
 
 const createAccountSchema = sharedZodSchemas.accountRouteSchemas.createAccount;
@@ -31,7 +31,7 @@ const UPDATE_ACCOUNT_INPUTS = [
 
 export const UpdateAccountForm = forwardRef<
   HTMLButtonElement,
-  IDialogAccountFormProps
+  IDialogFormPropsReceivesAccount
 >(({ accountId, setDialogOpen, setDropdownOpen }, submitBtnRef) => {
   const { isUpdatingAccount, updateAccount } = useUpdateAccount();
 
