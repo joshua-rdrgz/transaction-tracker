@@ -1,9 +1,8 @@
 import { forwardRef } from 'react';
 import { FieldValues } from 'react-hook-form';
 import { z } from 'zod';
-import { toast } from 'react-hot-toast';
 import { useCreateAccount } from '@/features/accounts/hooks/useCreateAccount';
-import { IDialogAccountFormProps } from '@/features/accounts/forms/types';
+import { IDialogFormPropsReceivesAccount } from '@/lib/types';
 import { DialogForm } from '@/ui/dialog-form';
 import sharedZodSchemas from 'shared-zod-schemas';
 
@@ -30,15 +29,13 @@ const CREATE_ACCOUNT_INPUTS = [
 
 export const CreateAccountForm = forwardRef<
   HTMLButtonElement,
-  IDialogAccountFormProps
+  IDialogFormPropsReceivesAccount
 >(({ setDialogOpen }, submitBtnRef) => {
   const { isCreatingAccount, createAccount } = useCreateAccount();
 
   const onSubmit = (values: FieldValues) => {
     createAccount(values as CreateAccountSchema, {
       onSuccess() {
-        toast.success('Successfully created account!');
-        console.log('setDialogOpen: ', setDialogOpen);
         setDialogOpen?.(false);
       },
     });
