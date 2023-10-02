@@ -31,7 +31,7 @@ model Account {
 
   transactions Transaction[]
 
-  user User @relation(fields: [userId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -45,8 +45,8 @@ model Category {
   targets      Target[]
   transactions Transaction[]
 
-  user           User           @relation(fields: [userId], references: [id])
-  categoryBucket CategoryBucket @relation(fields: [bucketId], references: [id])
+  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  categoryBucket CategoryBucket @relation(fields: [bucketId], references: [id], onDelete: Cascade)
 
   @@index([userId])
   @@index([bucketId])
@@ -64,7 +64,7 @@ model Target {
   target     Int
   categoryId String
 
-  category Category @relation(fields: [categoryId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 
   @@id([date, categoryId])
   @@index([categoryId])
@@ -75,12 +75,13 @@ model Transaction {
   userId      String
   accountId   String
   categoryId  String
-  amount      Int
-  description String
   date        DateTime @default(now())
+  contact     String
+  description String
+  amount      Int
 
-  user     User     @relation(fields: [userId], references: [id])
-  account  Account  @relation(fields: [accountId], references: [id])
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account  Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
   category Category @relation(fields: [categoryId], references: [id])
 
   @@index([userId])
