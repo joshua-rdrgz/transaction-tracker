@@ -17,7 +17,8 @@ export function createContext({ req, res }: CreateExpressContextOptions) {
 
   return ctx;
 }
-export type Context = inferAsyncReturnType<typeof createContext>;
+export type InitialContext = inferAsyncReturnType<typeof createContext>;
+export type Context = CreateExpressContextOptions & { user: { id: string } };
 
 const t = initTRPC.context<Context>().create({ errorFormatter });
 
