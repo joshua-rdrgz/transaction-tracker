@@ -57,10 +57,11 @@ export const transactionErrors = {
   noAmount: 'A transaction must have an amount.  Please provide one.',
   noAssociatedUser:
     'A transaction must have a corresponding user.  Please provide one.',
-  noAssociatedAccount:
-    'A transaction must have a corresponding account.  Please provide one.',
-  noAssociatedCategory:
-    'A transaction must have a corresponding category.  Please provide one.',
+  noAccountFound:
+    "We couldn't find that account.  Please provide a different one.",
+
+  noCategoryFound:
+    "We couldn't find that category.  Please provide a different one.",
   noDate: 'A transaction must have a date.  Please provide one.',
 } as const;
 
