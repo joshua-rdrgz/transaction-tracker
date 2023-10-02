@@ -1,9 +1,8 @@
-'use client';
-
 import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  getPaginationRowModel,
   useReactTable,
 } from '@tanstack/react-table';
 
@@ -15,11 +14,14 @@ import {
   TableHeader,
   TableRow,
 } from '@/ui/table';
-import { Spinner } from './spinner';
+import { Spinner } from '@/ui/spinner';
+import { DataTablePagination } from './data-table-pagination';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  defaultPageSize?: number;
+  pageSizeOptions?: number[];
   isLoading?: boolean;
   noResultsText?: string;
 }
@@ -27,6 +29,8 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
   columns,
   data,
+  defaultPageSize = 10,
+  pageSizeOptions = [5, 10, 15, 20, 25],
   isLoading,
   noResultsText,
 }: DataTableProps<TData, TValue>) {
@@ -34,6 +38,12 @@ export function DataTable<TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    initialState: {
+      pagination: {
+        pageSize: defaultPageSize,
+      },
+    },
   });
 
   const tableBody = table.getRowModel().rows?.length ? (
@@ -55,38 +65,45 @@ export function DataTable<TData, TValue>({
   );
 
   return (
-    <div className='rounded-md border'>
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                return (
-                  <TableHead key={header.id}>
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext()
-                        )}
-                  </TableHead>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {isLoading ? (
-            <TableRow>
-              <TableCell colSpan={columns.length} className='text-center'>
-                <Spinner size={15} className='!block' />
-              </TableCell>
-            </TableRow>
-          ) : (
-            tableBody
-          )}
-        </TableBody>
-      </Table>
-    </div>
+    <>
+      <div className='rounded-md border'>
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  return (
+                    <TableHead key={header.id}>
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </TableHead>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {isLoading ? (
+              <TableRow>
+                <TableCell colSpan={columns.length} className='text-center'>
+                  <Spinner size={15} className='!block' />
+                </TableCell>
+              </TableRow>
+            ) : (
+              tableBody
+            )}
+          </TableBody>
+        </Table>
+      </div>
+      <DataTablePagination
+        table={table}
+        pageSizes={pageSizeOptions}
+        isLoading={isLoading}
+      />
+    </>
   );
 }
