@@ -1,12 +1,8 @@
 import { trpc } from '@/config/trpc';
-import { ReturnTypeLoader } from '@/lib/utils';
-import { accountPageLoader } from '@/pages/loaders/accountPageLoader';
 import { useLoaderData } from 'react-router-dom';
 
 export const useAccount = (accountId: string) => {
-  const initialData = useLoaderData() as ReturnTypeLoader<
-    typeof accountPageLoader
-  >;
+  const initialData = useLoaderData();
 
   const {
     data: {
