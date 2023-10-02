@@ -52,7 +52,6 @@ export const CreateTransactionForm = forwardRef<
     createTransaction(values as CreateTransactionSchema, {
       onSuccess() {
         toast.success('Successfully created transaction!');
-        console.log('setDialogOpen: ', setDialogOpen);
         setDialogOpen?.(false);
       },
     });
