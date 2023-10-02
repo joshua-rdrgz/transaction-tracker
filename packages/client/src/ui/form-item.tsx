@@ -2,11 +2,14 @@ import { Form } from '@/ui/form';
 import { Input } from '@/ui/input';
 import { ControllerRenderProps, FieldPath, FieldValues } from 'react-hook-form';
 
+type ComponentWithProps<TProps> = (props: TProps) => JSX.Element;
+
 interface IFormItemProps<T extends FieldValues, U extends FieldPath<T>> {
   label: string;
   field: ControllerRenderProps<T, U>;
   inputProps?: { [key: string]: any };
   itemClassName?: string;
+  inputComponent?: ComponentWithProps<any>;
 }
 
 /**
@@ -17,6 +20,7 @@ export function FormItem<T extends FieldValues, U extends FieldPath<T>>({
   field,
   inputProps = {},
   itemClassName,
+  inputComponent: InputComponent,
 }: IFormItemProps<T, U>) {
   return (
     <Form.Item className={itemClassName}>
@@ -25,7 +29,11 @@ export function FormItem<T extends FieldValues, U extends FieldPath<T>>({
         <Form.Message className='text-[0.75rem]' />
       </div>
       <Form.Control>
-        <Input {...field} {...inputProps} />
+        {InputComponent ? (
+          <InputComponent field={field} {...inputProps} />
+        ) : (
+          <Input {...field} {...inputProps} />
+        )}
       </Form.Control>
     </Form.Item>
   );
