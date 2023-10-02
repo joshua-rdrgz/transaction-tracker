@@ -15,16 +15,19 @@ import {
   TableHeader,
   TableRow,
 } from '@/ui/table';
+import { Spinner } from './spinner';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  isLoading?: boolean;
   noResultsText?: string;
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
+  isLoading,
   noResultsText,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
@@ -32,6 +35,24 @@ export function DataTable<TData, TValue>({
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
+
+  const tableBody = table.getRowModel().rows?.length ? (
+    table.getRowModel().rows.map((row) => (
+      <TableRow key={row.id} data-state={row.getIsSelected() && 'selected'}>
+        {row.getVisibleCells().map((cell) => (
+          <TableCell key={cell.id}>
+            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+          </TableCell>
+        ))}
+      </TableRow>
+    ))
+  ) : (
+    <TableRow>
+      <TableCell colSpan={columns.length} className='h-24 text-center'>
+        {noResultsText || 'No results.'}
+      </TableCell>
+    </TableRow>
+  );
 
   return (
     <div className='rounded-md border'>
@@ -55,25 +76,14 @@ export function DataTable<TData, TValue>({
           ))}
         </TableHeader>
         <TableBody>
-          {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && 'selected'}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
-                ))}
-              </TableRow>
-            ))
-          ) : (
+          {isLoading ? (
             <TableRow>
-              <TableCell colSpan={columns.length} className='h-24 text-center'>
-                {noResultsText || 'No results.'}
+              <TableCell colSpan={columns.length} className='text-center'>
+                <Spinner size={15} className='!block' />
               </TableCell>
             </TableRow>
+          ) : (
+            tableBody
           )}
         </TableBody>
       </Table>
