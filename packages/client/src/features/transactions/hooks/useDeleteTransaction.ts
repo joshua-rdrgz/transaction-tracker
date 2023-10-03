@@ -9,6 +9,7 @@ export const useDeleteTransaction = () => {
   } = trpc.transactions.deleteTransaction.useMutation({
     onSuccess: () => {
       toast.success('Transaction successfully deleted.');
+      utils.accounts.getAccountBalance.invalidate();
       utils.transactions.invalidate();
     },
   });

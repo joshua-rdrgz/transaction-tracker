@@ -6,7 +6,10 @@ export const useUpdateTransaction = () => {
     isLoading: isUpdatingTransaction,
     mutate: updateTransaction,
   } = trpc.transactions.updateTransaction.useMutation({
-    onSuccess: () => utils.transactions.invalidate(),
+    onSuccess: () => {
+      utils.accounts.getAccountBalance.invalidate();
+      utils.transactions.invalidate();
+    },
   });
 
   return {
