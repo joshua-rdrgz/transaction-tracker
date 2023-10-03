@@ -39,7 +39,7 @@ const accountColumns: ColumnDef<Prisma.AccountCreateManyInput>[] = [
 ];
 
 export function AccountsList() {
-  const accounts = useAccounts();
+  const { accounts } = useAccounts();
 
   return (
     <div className='flex flex-col gap-6'>

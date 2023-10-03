@@ -3,19 +3,29 @@ import { trpc } from '@/config/trpc';
 import { accountsPageLoader } from '@/pages/loaders/accountsPageLoader';
 import { ReturnTypeLoader } from '@/lib/utils';
 
-export const useAccounts = () => {
+interface IUseAccountOptions {
+  useReactRouterLoader: boolean;
+}
+
+export const useAccounts = (
+  options: IUseAccountOptions = {
+    useReactRouterLoader: true,
+  }
+) => {
   const initialData = useLoaderData() as ReturnTypeLoader<
     typeof accountsPageLoader
   >;
 
   const {
-    data: {
-      data: { accounts },
-    },
+    isLoading: isGettingAccounts,
+    data,
   } = trpc.accounts.readAccounts.useQuery(undefined, {
-    // @ts-ignore (initialData will never be null)
-    initialData,
+    // @ts-ignore
+    initialData: options.useReactRouterLoader ? initialData : null,
   });
 
-  return accounts;
+  return {
+    isGettingAccounts,
+    accounts: data?.data?.accounts,
+  };
 };
