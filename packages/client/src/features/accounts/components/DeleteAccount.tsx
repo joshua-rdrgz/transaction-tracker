@@ -13,10 +13,11 @@ export const DeleteAccount: React.FC<IDeleteAccountProps> = ({
   const { deleteAccount } = useDeleteAccount();
   return (
     <DialogDeleteContent
-      handleDeleteAccount={() => {
+      handleDelete={() => {
         deleteAccount(accountId);
         onClose();
       }}
+      dialogDescription='This action cannot be undone. This will permanently delete your bank account and all associated transactions.'
     />
   );
 };
