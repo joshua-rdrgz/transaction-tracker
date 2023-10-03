@@ -104,5 +104,17 @@ export default {
         categoryId: z.string().optional(),
       })
       .optional(),
+    updateTransaction: z.object({
+      transactionId: z.string().nonempty('Transaction ID is required.'),
+      data: z.object({
+        category: z.string().nonempty('Category required.'),
+        account: z.string().nonempty('Account required.'),
+        date: z.coerce.date().optional(),
+        contact: z.string().optional(),
+        description: z.string().optional(),
+        amount: z.coerce.number().optional(),
+      }),
+    }),
+    deleteTransaction: z.string().nonempty('Transaction ID is required.'),
   },
 };

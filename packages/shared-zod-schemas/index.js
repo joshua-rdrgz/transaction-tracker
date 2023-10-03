@@ -100,5 +100,17 @@ exports.default = {
             categoryId: zod_1.z.string().optional(),
         })
             .optional(),
+        updateTransaction: zod_1.z.object({
+            transactionId: zod_1.z.string().nonempty('Transaction ID is required.'),
+            data: zod_1.z.object({
+                category: zod_1.z.string().nonempty('Category required.'),
+                account: zod_1.z.string().nonempty('Account required.'),
+                date: zod_1.z.coerce.date().optional(),
+                contact: zod_1.z.string().optional(),
+                description: zod_1.z.string().optional(),
+                amount: zod_1.z.coerce.number().optional(),
+            }),
+        }),
+        deleteTransaction: zod_1.z.string().nonempty('Transaction ID is required.'),
     },
 };

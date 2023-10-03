@@ -154,6 +154,52 @@ declare const _default: {
             accountId?: string | undefined;
             categoryId?: string | undefined;
         }>>;
+        updateTransaction: z.ZodObject<{
+            transactionId: z.ZodString;
+            data: z.ZodObject<{
+                date: z.ZodOptional<z.ZodDate>;
+                contact: z.ZodOptional<z.ZodString>;
+                description: z.ZodOptional<z.ZodString>;
+                category: z.ZodString;
+                amount: z.ZodOptional<z.ZodNumber>;
+                account: z.ZodString;
+            }, "strip", z.ZodTypeAny, {
+                category: string;
+                account: string;
+                date?: Date | undefined;
+                contact?: string | undefined;
+                description?: string | undefined;
+                amount?: number | undefined;
+            }, {
+                category: string;
+                account: string;
+                date?: Date | undefined;
+                contact?: string | undefined;
+                description?: string | undefined;
+                amount?: number | undefined;
+            }>;
+        }, "strip", z.ZodTypeAny, {
+            data: {
+                category: string;
+                account: string;
+                date?: Date | undefined;
+                contact?: string | undefined;
+                description?: string | undefined;
+                amount?: number | undefined;
+            };
+            transactionId: string;
+        }, {
+            data: {
+                category: string;
+                account: string;
+                date?: Date | undefined;
+                contact?: string | undefined;
+                description?: string | undefined;
+                amount?: number | undefined;
+            };
+            transactionId: string;
+        }>;
+        deleteTransaction: z.ZodString;
     };
 };
 export default _default;
