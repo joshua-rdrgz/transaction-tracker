@@ -79,6 +79,7 @@ export default {
       }),
     }),
     deleteAccount: z.string().nonempty('Account ID is required.'),
+    getAccountBalance: z.string().nonempty('Account ID is required.'),
   },
   categoryRouteSchemas: {
     getCategory: z.string().nonempty('Category ID is required.'),

@@ -75,6 +75,7 @@ exports.default = {
             }),
         }),
         deleteAccount: zod_1.z.string().nonempty('Account ID is required.'),
+        getAccountBalance: zod_1.z.string().nonempty('Account ID is required.'),
     },
     categoryRouteSchemas: {
         getCategory: zod_1.z.string().nonempty('Category ID is required.'),
