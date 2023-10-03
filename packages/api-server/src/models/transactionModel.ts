@@ -11,6 +11,9 @@ import { transactionErrors } from '@/errorMessages';
 type CreateTransactionInput = z.infer<
   typeof sharedZodSchemas.transactionRouteSchemas.createTransaction
 >;
+type UpdateTransactionInput = z.infer<
+  typeof sharedZodSchemas.transactionRouteSchemas.updateTransaction
+>;
 
 class PrismaTransaction {
   constructor(
@@ -24,31 +27,15 @@ class PrismaTransaction {
     input: CreateTransactionInput,
     ctx: Context
   ): Promise<Transaction> {
-    const associatedAccount = await prisma.account.findUnique({
-      where: {
-        id: input.account,
-        userId: ctx.user.id,
-      },
-    });
+    const associatedAccount = await this.findAssociatedAccount(
+      input.account,
+      ctx.user.id
+    );
 
-    if (!associatedAccount)
-      throw new TRPCError({
-        message: transactionErrors.noAccountFound,
-        code: 'BAD_REQUEST',
-      });
-
-    const associatedCategory = await prisma.category.findUnique({
-      where: {
-        id: input.category,
-        userId: ctx.user.id,
-      },
-    });
-
-    if (!associatedCategory)
-      throw new TRPCError({
-        message: transactionErrors.noCategoryFound,
-        code: 'BAD_REQUEST',
-      });
+    const associatedCategory = await this.findAssociatedCategory(
+      input.category,
+      ctx.user.id
+    );
 
     const transaction = await this.prismaTransaction.create({
       data: {
@@ -63,6 +50,78 @@ class PrismaTransaction {
     });
 
     return transaction;
+  }
+
+  async updateTransaction(
+    input: UpdateTransactionInput,
+    ctx: Context
+  ): Promise<Transaction> {
+    const associatedAccount = await this.findAssociatedAccount(
+      input.data.account,
+      ctx.user.id
+    );
+
+    const associatedCategory = await this.findAssociatedCategory(
+      input.data.category,
+      ctx.user.id
+    );
+
+    const updateData = {
+      ...input.data,
+      category: undefined,
+      account: undefined,
+    };
+
+    const transaction = await this.prismaTransaction.update({
+      where: {
+        userId: ctx.user.id,
+        id: input.transactionId,
+      },
+      data: {
+        ...updateData,
+        accountId: associatedAccount.id,
+        categoryId: associatedCategory.id,
+      },
+    });
+
+    return transaction;
+  }
+
+  // ****
+  // UTILITY FUNCTIONS
+
+  private async findAssociatedAccount(accountId: string, userId: string) {
+    const associatedAccount = await prisma.account.findUnique({
+      where: {
+        id: accountId,
+        userId: userId,
+      },
+    });
+
+    if (!associatedAccount)
+      throw new TRPCError({
+        message: transactionErrors.noAccountFound,
+        code: 'BAD_REQUEST',
+      });
+
+    return associatedAccount;
+  }
+
+  private async findAssociatedCategory(categoryId: string, userId: string) {
+    const associatedCategory = await prisma.category.findUnique({
+      where: {
+        id: categoryId,
+        userId: userId,
+      },
+    });
+
+    if (!associatedCategory)
+      throw new TRPCError({
+        message: transactionErrors.noCategoryFound,
+        code: 'BAD_REQUEST',
+      });
+
+    return associatedCategory;
   }
 }
 

@@ -24,7 +24,30 @@ const getTransactions = authProcedure
     return transactions;
   });
 
+const updateTransaction = authProcedure
+  .input(sharedZodSchemas.transactionRouteSchemas.updateTransaction)
+  .mutation(async ({ input, ctx }) => {
+    const transaction = await prismaTransaction.updateTransaction(input, ctx);
+
+    return transaction;
+  });
+
+const deleteTransaction = authProcedure
+  .input(sharedZodSchemas.transactionRouteSchemas.deleteTransaction)
+  .mutation(async ({ input, ctx }) => {
+    await prisma.transaction.delete({
+      where: {
+        userId: ctx.user.id,
+        id: input,
+      },
+    });
+
+    return null;
+  });
+
 export default {
   createTransaction,
   getTransactions,
+  updateTransaction,
+  deleteTransaction,
 };
