@@ -13,6 +13,11 @@ export interface IDialogFormPropsReceivesAccount extends IDialogFormProps {
   accountId?: string;
 }
 
+export interface IDialogFormPropsReceivesTransaction extends IDialogFormProps {
+  /** Receives from DialogFormContent component */
+  transactionId?: string;
+}
+
 export interface ICustomFormComponentProps<
   T extends FieldValues,
   U extends FieldPath<T>
