@@ -3,13 +3,14 @@ import { Prisma } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { useTransactions } from '@/features/transactions/hooks/useTransactions';
 import { CreateTransaction } from '@/features/transactions/components/CreateTransaction';
-import { DataTable } from '@/ui/data-table';
-import { TableCell } from '@/ui/table-cell';
-import { currency } from '@/lib/utils';
+import { TransactionsDropdown } from '@/features/transactions/components/TransactionsDropdown';
 import {
   useCategories,
   ICategoriesInTransactions,
 } from '@/features/categories/hooks/useCategories';
+import { DataTable } from '@/ui/data-table';
+import { TableCell } from '@/ui/table-cell';
+import { currency } from '@/lib/utils';
 
 const getTransactionColumns = (
   categories: ICategoriesInTransactions
@@ -30,7 +31,7 @@ const getTransactionColumns = (
       );
     },
     cell: ({ row }) => {
-      const displayDate = format(new Date(row.getValue('date')), 'PPP');
+      const displayDate = format(new Date(row.getValue('date')), 'P');
       return <TableCell>{displayDate}</TableCell>;
     },
   },
@@ -100,7 +101,11 @@ const getTransactionColumns = (
   {
     id: 'actions',
     cell: ({ row }) => {
-      return <TableCell>...</TableCell>;
+      return (
+        <TableCell>
+          <TransactionsDropdown transactionId={row.original.id as string} />
+        </TableCell>
+      );
     },
   },
 ];
