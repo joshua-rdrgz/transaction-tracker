@@ -16,7 +16,19 @@ const getTransactionColumns = (
 ): ColumnDef<Prisma.TransactionCreateManyInput>[] => [
   {
     accessorKey: 'date',
-    header: () => <TableCell>Date</TableCell>,
+    header: ({ column }) => {
+      return (
+        <TableCell
+          isHeader
+          isSortable
+          onClickHeader={() =>
+            column.toggleSorting(column.getIsSorted() === 'asc')
+          }
+        >
+          Date
+        </TableCell>
+      );
+    },
     cell: ({ row }) => {
       const displayDate = format(new Date(row.getValue('date')), 'PPP');
       return <TableCell>{displayDate}</TableCell>;
@@ -45,7 +57,19 @@ const getTransactionColumns = (
   },
   {
     accessorKey: 'amount',
-    header: () => <TableCell>Amount</TableCell>,
+    header: ({ column }) => {
+      return (
+        <TableCell
+          isHeader
+          isSortable
+          onClickHeader={() =>
+            column.toggleSorting(column.getIsSorted() === 'asc')
+          }
+        >
+          Amount
+        </TableCell>
+      );
+    },
     cell: ({ row }) => {
       const amount = currency(row.getValue('amount'));
       return <TableCell className='font-medium'>{amount}</TableCell>;
