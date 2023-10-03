@@ -20,11 +20,13 @@ import {
   TableRow,
 } from '@/ui/table';
 import { Spinner } from '@/ui/spinner';
-import { DataTablePagination } from './data-table-pagination';
+import { DataTablePagination } from '@/ui/data-table-pagination';
+import { DataTableViewOptions } from '@/ui/data-table-view-options';
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  toggleColumns?: boolean;
   defaultPageSize?: number;
   pageSizeOptions?: number[];
   isLoading?: boolean;
@@ -34,6 +36,7 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
   columns,
   data,
+  toggleColumns = true,
   defaultPageSize = 10,
   pageSizeOptions = [5, 10, 15, 20, 25],
   isLoading,
@@ -82,6 +85,7 @@ export function DataTable<TData, TValue>({
 
   return (
     <>
+      {toggleColumns && <DataTableViewOptions table={table} />}
       <div className='rounded-md border'>
         <Table>
           <TableHeader>
