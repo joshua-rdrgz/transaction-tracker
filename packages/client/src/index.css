@@ -95,3 +95,7 @@
 .active:hover {
   background-color: hsl(var(--muted) / 0.9);
 }
+
+th.custom-class-has-button {
+  text-align: center !important;
+}
