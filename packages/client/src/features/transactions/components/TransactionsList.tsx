@@ -21,7 +21,7 @@ const getTransactionColumns = (
         <TableCell
           isHeader
           isSortable
-          onClickHeader={() =>
+          sortOnClick={() =>
             column.toggleSorting(column.getIsSorted() === 'asc')
           }
         >
@@ -36,12 +36,34 @@ const getTransactionColumns = (
   },
   {
     accessorKey: 'contact',
-    header: () => <TableCell>Contact</TableCell>,
+    header: ({ column }) => {
+      return (
+        <TableCell
+          isHeader
+          isFilterable
+          filterValue={column.getFilterValue() as string}
+          filterOnChange={(e) => column.setFilterValue(e.target.value)}
+        >
+          Contact
+        </TableCell>
+      );
+    },
     cell: ({ row }) => <TableCell>{row.getValue('contact')}</TableCell>,
   },
   {
     accessorKey: 'description',
-    header: () => <TableCell>Description</TableCell>,
+    header: ({ column }) => {
+      return (
+        <TableCell
+          isHeader
+          isFilterable
+          filterValue={column.getFilterValue() as string}
+          filterOnChange={(e) => column.setFilterValue(e.target.value)}
+        >
+          Description
+        </TableCell>
+      );
+    },
     cell: ({ row }) => <TableCell>{row.getValue('description')}</TableCell>,
   },
   {
@@ -62,7 +84,7 @@ const getTransactionColumns = (
         <TableCell
           isHeader
           isSortable
-          onClickHeader={() =>
+          sortOnClick={() =>
             column.toggleSorting(column.getIsSorted() === 'asc')
           }
         >
