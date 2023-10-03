@@ -1,9 +1,9 @@
+import prisma, { prismaAccount } from '@/config/prisma';
 import { TRPCError } from '@trpc/server';
 import zodSchemas from 'shared-zod-schemas';
 
 import { accountErrors } from '@/errorMessages';
 import { authProcedure } from '@/procedures/authProcedure';
-import prisma from '@/config/prisma';
 
 const createAccount = authProcedure
   .input(zodSchemas.accountRouteSchemas.createAccount)
@@ -37,25 +37,8 @@ const readAccounts = authProcedure.query(async ({ ctx }) => {
 
 const readAccount = authProcedure
   .input(zodSchemas.accountRouteSchemas.readAccount)
-  .query(async (opts) => {
-    const { ctx, input: accountId } = opts;
-    const account = await prisma.account.findUnique({
-      where: {
-        id: accountId,
-        userId: ctx.user.id,
-      },
-    });
-
-    if (!account)
-      throw new TRPCError({
-        code: 'BAD_REQUEST',
-        message: accountErrors.noAccountOrNoAccess,
-      });
-
-    return {
-      status: 'success',
-      data: { account },
-    };
+  .query(async ({ input: accountId, ctx }) => {
+    return prismaAccount.readAccount(accountId, ctx.user.id);
   });
 
 const updateAccount = authProcedure
@@ -108,10 +91,22 @@ const deleteAccount = authProcedure
     };
   });
 
+const getAccountBalance = authProcedure
+  .input(zodSchemas.accountRouteSchemas.getAccountBalance)
+  .query(async ({ input: accountId, ctx }) => {
+    const accountBalance = await prismaAccount.getAccountBalance(
+      accountId,
+      ctx.user.id
+    );
+
+    return accountBalance;
+  });
+
 export default {
   createAccount,
   readAccounts,
   readAccount,
   updateAccount,
   deleteAccount,
+  getAccountBalance,
 };
