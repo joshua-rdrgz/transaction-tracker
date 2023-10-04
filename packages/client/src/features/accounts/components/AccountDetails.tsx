@@ -34,9 +34,9 @@ export const AccountDetails: React.FC<IAccountDetailsProps> = ({ account }) => {
           key={`account-card-${cardIdx + 1}`}
         >
           <CardHeader className='p-2'>
-            <CardTitle className='text-lg'>{card.title}</CardTitle>
+            <CardTitle className='text-lg font-normal'>{card.title}</CardTitle>
           </CardHeader>
-          <CardContent className='font-display text-3xl break-words'>
+          <CardContent className='font-display text-3xl break-words font-bold'>
             {card.content}
           </CardContent>
         </Card>
