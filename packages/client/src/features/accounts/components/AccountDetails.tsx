@@ -37,13 +37,13 @@ export const AccountDetails: React.FC<IAccountDetailsProps> = ({ account }) => {
     <section className='flex flex-wrap gap-2 justify-center lg:flex-nowrap'>
       {cards.map((card, cardIdx) => (
         <Card
-          className='flex flex-col justify-center text-center w-full '
+          className='flex flex-col justify-center text-center w-full shadow-md dark:shadow-secondary'
           key={`account-card-${cardIdx + 1}`}
         >
           <CardHeader className='p-2'>
-            <CardTitle className='font-display text-lg'>{card.title}</CardTitle>
+            <CardTitle className='text-lg'>{card.title}</CardTitle>
           </CardHeader>
-          <CardContent className='text-3xl break-words'>
+          <CardContent className='font-display text-3xl break-words'>
             {card.isLoading ? <Spinner size={10} /> : card.content}
           </CardContent>
         </Card>
