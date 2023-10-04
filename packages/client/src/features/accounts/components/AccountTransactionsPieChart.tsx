@@ -8,7 +8,7 @@ import {
   useCategories,
 } from '@/features/categories/hooks/useCategories';
 import { generateRandomHexColor } from '@/lib/hexColorUtils';
-import { IRechartsData } from '@/lib/types';
+import { IRechartsPieData } from '@/lib/types';
 import { PieChart } from '@/ui/pie-chart';
 import { Spinner } from '@/ui/spinner';
 import { Filter } from '@/ui/filter';
@@ -27,7 +27,7 @@ export const AccountTransactionsPieChart: React.FC<IAccountTransactionsPieChartP
     transactionIds: transactions?.map((transaction) => transaction.id),
   });
   const [transactionsData, setTransactionsData] = useState<
-    IRechartsData[] | null
+    IRechartsPieData[] | null
   >(null);
 
   const [searchParams] = useSearchParams();
@@ -58,11 +58,15 @@ export const AccountTransactionsPieChart: React.FC<IAccountTransactionsPieChartP
   }, [displayByContacts, transactions, displayIncomeValues, categories]);
 
   if (isLoadingTransactions || isLoadingCategories)
-    return <Spinner size={40} />;
+    return (
+      <div className='flex justify-center items-center'>
+        <Spinner size={40} />
+      </div>
+    );
 
   return (
     <>
-      <div className='flex flex-col gap-1'>
+      <div className='flex flex-row gap-2 justify-end ml-auto'>
         <Filter
           filterField='display-pie-by'
           filterOptions={[
@@ -104,7 +108,7 @@ export const AccountTransactionsPieChart: React.FC<IAccountTransactionsPieChartP
 };
 
 function transformTransactions(
-  transactions: IRechartsData[] = [],
+  transactions: IRechartsPieData[] = [],
   displayIncomeValues: boolean
 ) {
   return (
@@ -127,7 +131,7 @@ function transformTransactions(
 function groupTransactionsByContact(
   transactions: Prisma.TransactionCreateManyAccountInput[] = []
 ) {
-  const chartItems: IRechartsData[] = [];
+  const chartItems: IRechartsPieData[] = [];
 
   const uniqueContacts = new Set(
     transactions.map((transaction) => transaction.contact)
@@ -156,7 +160,7 @@ function groupTransactionsByCategory(
   transactions: Prisma.TransactionCreateManyAccountInput[] = [],
   categories: ICategoriesInTransactions = []
 ) {
-  const chartItems: IRechartsData[] = [];
+  const chartItems: IRechartsPieData[] = [];
 
   const uniqueCategoryIds = new Set(
     transactions.map((transaction) => transaction.categoryId)

@@ -25,7 +25,7 @@ export interface ICustomFormComponentProps<
   field?: ControllerRenderProps<T, U>;
 }
 
-export interface IRechartsData {
+export interface IRechartsPieData {
   value: number;
   label: string;
   color: string;

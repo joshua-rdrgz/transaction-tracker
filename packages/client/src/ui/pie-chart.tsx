@@ -1,4 +1,4 @@
-import { IRechartsData } from '@/lib/types';
+import { IRechartsPieData } from '@/lib/types';
 import { currency } from '@/lib/utils';
 import {
   ResponsiveContainer,
@@ -10,7 +10,7 @@ import {
 import { Card, CardContent, CardHeader } from './card';
 
 interface IPieChartProps {
-  data: IRechartsData[];
+  data: IRechartsPieData[];
   render(entry: any, entryIdx: number): any;
   containerHeight?: number;
 }
@@ -50,7 +50,7 @@ export const PieChart: React.FC<IPieChartProps> = ({
           verticalAlign='middle'
           align='right'
           // @ts-ignore
-          width='27%'
+          width='25%'
           layout='vertical'
           iconSize={15}
           iconType='circle'
