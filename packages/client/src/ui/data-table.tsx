@@ -87,10 +87,10 @@ export function DataTable<TData, TValue>({
     <>
       {toggleColumns && <DataTableViewOptions table={table} />}
       <div className='rounded-md border'>
-        <Table>
+        <Table wrapperClassName='shadow-md dark:shadow-secondary'>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
+              <TableRow key={headerGroup.id} className='bg-secondary'>
                 {headerGroup.headers.map((header) => {
                   return (
                     <TableHead
