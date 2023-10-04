@@ -24,3 +24,10 @@ export interface ICustomFormComponentProps<
 > {
   field?: ControllerRenderProps<T, U>;
 }
+
+export interface IRechartsData {
+  value: number;
+  label: string;
+  color: string;
+  [key: string]: any;
+}
