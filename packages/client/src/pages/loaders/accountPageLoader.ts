@@ -3,6 +3,9 @@ import { trpcVanillaClient } from '@/config/trpc';
 import { LoaderFunction } from 'react-router-dom';
 import { QueryFnTypecast } from '@/lib/types';
 
+// ****
+// QUERIES
+
 export type ReadAccountQueryFn = ReturnType<typeof readAccountQuery>['queryFn'];
 
 const readAccountQuery = (accountId: string) => ({
@@ -23,6 +26,9 @@ const readAccountBalanceQuery = (accountId: string) => ({
   queryFn: async () =>
     await trpcVanillaClient.accounts.getAccountBalance.query(accountId),
 });
+
+// ****
+// PAGE LOADER
 
 export type AccountPageLoader = QueryFnTypecast<
   [ReadAccountQueryFn, ReadAccountBalanceQueryFn]
