@@ -34,9 +34,12 @@ export const AccountDetails: React.FC<IAccountDetailsProps> = ({ account }) => {
   ];
 
   return (
-    <section className='flex justify-between'>
+    <section className='flex flex-wrap gap-2 justify-center lg:flex-nowrap'>
       {cards.map((card, cardIdx) => (
-        <Card className='text-center' key={`account-card-${cardIdx + 1}`}>
+        <Card
+          className='flex flex-col justify-center text-center w-full '
+          key={`account-card-${cardIdx + 1}`}
+        >
           <CardHeader className='p-2'>
             <CardTitle className='font-display text-lg'>{card.title}</CardTitle>
           </CardHeader>
