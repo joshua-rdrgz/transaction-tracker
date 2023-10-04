@@ -20,6 +20,16 @@ export const PieChart: React.FC<IPieChartProps> = ({
   data,
   render,
 }) => {
+  if (data.length === 0)
+    return (
+      <div
+        style={{ height: containerHeight }}
+        className='w-full flex justify-center items-center'
+      >
+        No data to display.
+      </div>
+    );
+
   return (
     <ResponsiveContainer width='100%' height={containerHeight}>
       <RechartsPieChart>
