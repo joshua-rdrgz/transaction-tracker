@@ -17,3 +17,5 @@ export const accountsPageLoader = (
     (await queryClient.fetchQuery<ReturnTypeQueryFn>(query))
   );
 };
+
+export type AccountsPageLoader = Awaited<ReturnTypeQueryFn>;

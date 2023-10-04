@@ -1,20 +1,14 @@
 import { useLoaderData } from 'react-router-dom';
 import { trpc } from '@/config/trpc';
-import { accountsPageLoader } from '@/pages/loaders/accountsPageLoader';
-import { ReturnTypeLoader } from '@/lib/utils';
-
-interface IUseAccountOptions {
-  useReactRouterLoader: boolean;
-}
+import { AccountsPageLoader } from '@/pages/loaders/accountsPageLoader';
+import { IHookOptions } from '@/lib/types';
 
 export const useAccounts = (
-  options: IUseAccountOptions = {
+  options: IHookOptions = {
     useReactRouterLoader: true,
   }
 ) => {
-  const initialData = useLoaderData() as ReturnTypeLoader<
-    typeof accountsPageLoader
-  >;
+  const initialData = useLoaderData() as AccountsPageLoader;
 
   const {
     isLoading: isGettingAccounts,
