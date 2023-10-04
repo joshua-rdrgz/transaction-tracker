@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Cell } from 'recharts';
 import { Prisma } from '@prisma/client';
@@ -31,8 +31,10 @@ export const AccountTransactionsPieChart: React.FC<IAccountTransactionsPieChartP
   >(null);
 
   const [searchParams] = useSearchParams();
-  const displayIncomeValues = searchParams.get('transaction-type') === 'income';
-  const displayByContacts = searchParams.get('display-pie-by') === 'contacts';
+  const displayIncomeValues =
+    (searchParams.get('transaction-type') || 'expenses') === 'income';
+  const displayByContacts =
+    (searchParams.get('display-pie-by') || 'contacts') === 'contacts';
 
   useEffect(() => {
     if (displayByContacts) {
