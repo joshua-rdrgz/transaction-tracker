@@ -38,7 +38,7 @@ const accountColumns: ColumnDef<Prisma.AccountCreateManyInput>[] = [
   },
 ];
 
-export function AccountsList() {
+export function AccountsTable() {
   const { accounts } = useAccounts();
 
   return (

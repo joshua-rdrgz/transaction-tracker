@@ -110,11 +110,11 @@ const getTransactionColumns = (
   },
 ];
 
-interface ITransactionsListProps {
+interface ITransactionsTableProps {
   filters?: { accountId?: string; categoryId?: string };
 }
 
-export function TransactionsList({ filters }: ITransactionsListProps) {
+export function TransactionsTable({ filters }: ITransactionsTableProps) {
   const { isLoadingTransactions, transactions } = useTransactions(filters);
   const { isLoadingCategories, categories } = useCategories({
     transactionIds: transactions?.map((transaction) => transaction.id),
@@ -128,6 +128,10 @@ export function TransactionsList({ filters }: ITransactionsListProps) {
         isLoading={isLoadingTransactions || isLoadingCategories}
         noResultsText='No transactions.  Add one to get started!'
         defaultPageSize={5}
+        columnVisibility={{
+          description: false,
+          categoryId: false,
+        }}
       />
       <div className='ml-auto'>
         <CreateTransaction page='account' id={filters?.accountId as string} />

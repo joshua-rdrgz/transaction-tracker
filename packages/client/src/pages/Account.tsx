@@ -3,7 +3,7 @@ import { AccountDetails } from '@/features/accounts/components/AccountDetails';
 import { AccountTransactionsLineChart } from '@/features/accounts/components/AccountTransactionsLineChart';
 import { AccountTransactionsPieChart } from '@/features/accounts/components/AccountTransactionsPieChart';
 import { useAccount } from '@/features/accounts/hooks/useAccount';
-import { TransactionsList } from '@/features/transactions/components/TransactionsList';
+import { TransactionsTable } from '@/features/transactions/components/TransactionsTable';
 import { ChartSection } from '@/ui/chart-section';
 
 export default function AccountPage() {
@@ -27,7 +27,7 @@ export default function AccountPage() {
         </section>
         <section>
           <h2 className='font-display text-2xl'>Account Transactions</h2>
-          <TransactionsList filters={{ accountId: account.id }} />
+            <TransactionsTable filters={{ accountId: account.id }} />
         </section>
       </div>
     </section>
