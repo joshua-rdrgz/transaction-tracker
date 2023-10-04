@@ -30,7 +30,7 @@ export const Filter: React.FC<IFilterProps> = ({
       type='single'
       value={currentFilter}
       onValueChange={handleFilterChange}
-      className='flex rounded ml-auto w-min p-0.5 bg-muted'
+      className='flex rounded ml-auto w-max p-0.5 bg-muted'
     >
       {filterOptions.map((filterOption) => (
         <ToggleGroup.Item
