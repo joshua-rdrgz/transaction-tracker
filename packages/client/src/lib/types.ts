@@ -1,5 +1,13 @@
 import { ControllerRenderProps, FieldPath, FieldValues } from 'react-hook-form';
 
+type QueryFn<T> = () => Promise<T>;
+
+type Awaited<T> = T extends Promise<infer U> ? U : T;
+
+export type QueryFnTypecast<QueryFns extends QueryFn<any>[]> = {
+  [K in keyof QueryFns]: Awaited<ReturnType<QueryFns[K]>>;
+};
+
 export interface IDialogFormProps {
   /** Receives from DialogFormContent component */
   setDialogOpen?: React.Dispatch<React.SetStateAction<boolean>>;
@@ -35,4 +43,8 @@ export interface IRechartsPieData {
 export interface IRechartsAreaData {
   name: string;
   [key: string]: any;
+}
+
+export interface IHookOptions {
+  useReactRouterLoader: boolean;
 }
