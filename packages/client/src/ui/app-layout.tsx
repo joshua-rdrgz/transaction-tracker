@@ -9,7 +9,7 @@ export const AppLayout = () => {
       <Header />
       <Sidebar />
       <main className='overflow-auto scrollb px-6 py-4'>
-        <div className='max-w-3xl mx-auto flex flex-col gap-6'>
+        <div className='max-w-4xl mx-auto flex flex-col gap-6'>
           <Outlet />
         </div>
       </main>
