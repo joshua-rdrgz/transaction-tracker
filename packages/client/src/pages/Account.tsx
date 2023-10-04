@@ -1,8 +1,10 @@
+import { useParams } from 'react-router-dom';
 import { AccountDetails } from '@/features/accounts/components/AccountDetails';
+import { AccountTransactionsLineChart } from '@/features/accounts/components/AccountTransactionsLineChart';
 import { AccountTransactionsPieChart } from '@/features/accounts/components/AccountTransactionsPieChart';
 import { useAccount } from '@/features/accounts/hooks/useAccount';
 import { TransactionsList } from '@/features/transactions/components/TransactionsList';
-import { useParams } from 'react-router-dom';
+import { ChartSection } from '@/ui/chart-section';
 
 export default function AccountPage() {
   const { accountId } = useParams();
@@ -14,14 +16,14 @@ export default function AccountPage() {
       <div className='flex flex-col gap-10'>
         <AccountDetails account={account} />
         <section className='flex flex-col gap-5 lg:flex-row max-w-full text-center'>
-          <div className='flex-grow'>
-            <h2 className='font-display text-2xl'>Transactions From Account</h2>
-            <AccountTransactionsPieChart accountId={account.id} />
-          </div>
-          <div className='flex-grow'>
-            <h2 className='font-display text-2xl'>Transactions From Account</h2>
-            <AccountTransactionsPieChart accountId={account.id} />
-          </div>
+          <ChartSection
+            title='Transactions From Account'
+            chart={<AccountTransactionsPieChart accountId={account.id} />}
+          />
+          <ChartSection
+            title='Transactions Over Time'
+            chart={<AccountTransactionsLineChart accountId={account.id} />}
+          />
         </section>
         <section>
           <h2 className='font-display text-2xl'>Account Transactions</h2>
