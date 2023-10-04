@@ -1,18 +1,12 @@
 import { currency } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/ui/card';
-import { Prisma } from '@prisma/client';
-import { useAccountBalance } from '../hooks/useAccountBalance';
-import { Spinner } from '@/ui/spinner';
+import { ReturnTypeUseAccount } from '@/features/accounts/hooks/useAccount';
 
 interface IAccountDetailsProps {
-  account: Prisma.AccountCreateManyInput;
+  account: ReturnTypeUseAccount;
 }
 
 export const AccountDetails: React.FC<IAccountDetailsProps> = ({ account }) => {
-  const { isCalculatingBalance, accountBalance } = useAccountBalance(
-    account.id as string
-  );
-
   const cards = [
     {
       title: 'Account Name',
@@ -24,8 +18,7 @@ export const AccountDetails: React.FC<IAccountDetailsProps> = ({ account }) => {
     },
     {
       title: 'Current Balance',
-      content: currency(accountBalance as number),
-      isLoading: isCalculatingBalance,
+      content: currency(account.balance as number),
     },
     {
       title: 'Difference',
@@ -44,7 +37,7 @@ export const AccountDetails: React.FC<IAccountDetailsProps> = ({ account }) => {
             <CardTitle className='text-lg'>{card.title}</CardTitle>
           </CardHeader>
           <CardContent className='font-display text-3xl break-words'>
-            {card.isLoading ? <Spinner size={10} /> : card.content}
+            {card.content}
           </CardContent>
         </Card>
       ))}
