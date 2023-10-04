@@ -9,6 +9,7 @@ import {
   getSortedRowModel,
   getFilteredRowModel,
   useReactTable,
+  VisibilityState,
 } from '@tanstack/react-table';
 
 import {
@@ -29,6 +30,7 @@ interface DataTableProps<TData, TValue> {
   toggleColumns?: boolean;
   defaultPageSize?: number;
   pageSizeOptions?: number[];
+  columnVisibility?: VisibilityState;
   isLoading?: boolean;
   noResultsText?: string;
 }
@@ -39,6 +41,7 @@ export function DataTable<TData, TValue>({
   toggleColumns = true,
   defaultPageSize = 10,
   pageSizeOptions = [5, 10, 15, 20, 25],
+  columnVisibility,
   isLoading,
   noResultsText,
 }: DataTableProps<TData, TValue>) {
@@ -58,6 +61,7 @@ export function DataTable<TData, TValue>({
       pagination: {
         pageSize: defaultPageSize,
       },
+      columnVisibility,
     },
     state: {
       sorting,
