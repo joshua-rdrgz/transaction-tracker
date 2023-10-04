@@ -1,6 +1,9 @@
 import { QueryClient } from '@tanstack/react-query';
 import { trpcVanillaClient } from '@/config/trpc';
 import { LoaderFunction } from 'react-router-dom';
+import { QueryFnTypecast } from '@/lib/types';
+
+export type ReadAccountQueryFn = ReturnType<typeof readAccountQuery>['queryFn'];
 
 const readAccountQuery = (accountId: string) => ({
   queryKey: [['accounts', 'readAccounts'], { input: accountId, type: 'query' }],
@@ -8,11 +11,35 @@ const readAccountQuery = (accountId: string) => ({
     await trpcVanillaClient.accounts.readAccount.query(accountId),
 });
 
-type ReturnTypeQueryFn = ReturnType<typeof readAccountQuery>['queryFn'];
+export type ReadAccountBalanceQueryFn = ReturnType<
+  typeof readAccountBalanceQuery
+>['queryFn'];
+
+const readAccountBalanceQuery = (accountId: string) => ({
+  queryKey: [
+    ['accounts', 'getAccountBalance'],
+    { input: accountId, type: 'query' },
+  ],
+  queryFn: async () =>
+    await trpcVanillaClient.accounts.getAccountBalance.query(accountId),
+});
+
+export type AccountPageLoader = QueryFnTypecast<
+  [ReadAccountQueryFn, ReadAccountBalanceQueryFn]
+>;
 
 export const accountPageLoader = (
   queryClient: QueryClient
-): LoaderFunction<ReturnTypeQueryFn> => async ({ params }) => {
+): LoaderFunction<[ReadAccountQueryFn, ReadAccountBalanceQueryFn]> => async ({
+  params,
+}) => {
   const accountQuery = readAccountQuery(params.accountId as string);
-  return queryClient.ensureQueryData(accountQuery);
+  const accountBalanceQuery = readAccountBalanceQuery(
+    params.accountId as string
+  );
+
+  return await Promise.all([
+    queryClient.ensureQueryData(accountQuery),
+    queryClient.ensureQueryData(accountBalanceQuery),
+  ]);
 };
