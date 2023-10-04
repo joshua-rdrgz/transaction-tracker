@@ -61,7 +61,7 @@ export const AccountTransactionsPieChart: React.FC<IAccountTransactionsPieChartP
 
   if (isLoadingTransactions || isLoadingCategories)
     return (
-      <div className='flex justify-center items-center'>
+      <div className='flex justify-center items-center flex-grow'>
         <Spinner size={40} />
       </div>
     );

@@ -48,7 +48,7 @@ export const AccountTransactionsLineChart: React.FC<IAccountTransactionsLineChar
 
   if (isLoadingTransactions)
     return (
-      <div className='flex justify-center items-center h-10'>
+      <div className='flex justify-center items-center flex-grow'>
         <Spinner size={40} />
       </div>
     );
