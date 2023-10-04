@@ -64,8 +64,6 @@ function CustomToolTip({ payload }: any) {
       },
     ] = payload;
 
-    console.log('payload: ', payload);
-
     return (
       <Card className='flex flex-col gap-2 p-4'>
         <CardHeader className='p-0 font-semibold text-md'>{name}</CardHeader>
