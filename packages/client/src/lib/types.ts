@@ -31,3 +31,8 @@ export interface IRechartsPieData {
   color: string;
   [key: string]: any;
 }
+
+export interface IRechartsAreaData {
+  name: string;
+  [key: string]: any;
+}
