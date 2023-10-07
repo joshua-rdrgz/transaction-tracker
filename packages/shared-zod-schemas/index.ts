@@ -83,12 +83,9 @@ export default {
   },
   categoryRouteSchemas: {
     getCategory: z.string().nonempty('Category ID is required.'),
-    getCategories: z
-      .object({
-        categoryBucket: z.string().optional(),
-        transactionIds: z.array(z.string()).optional(),
-      })
-      .optional(),
+  },
+  targetRouteSchemas: {
+    getTargets: z.string().optional(),
   },
   transactionRouteSchemas: {
     createTransaction: z.object({
@@ -117,5 +114,6 @@ export default {
       }),
     }),
     deleteTransaction: z.string().nonempty('Transaction ID is required.'),
+    getCategoriesFromTransactions: z.array(z.string()),
   },
 };

@@ -107,19 +107,13 @@ declare const _default: {
             };
         }>;
         deleteAccount: z.ZodString;
+        getAccountBalance: z.ZodString;
     };
     categoryRouteSchemas: {
         getCategory: z.ZodString;
-        getCategories: z.ZodOptional<z.ZodObject<{
-            categoryBucket: z.ZodOptional<z.ZodString>;
-            transactionIds: z.ZodOptional<z.ZodArray<z.ZodString, "many">>;
-        }, "strip", z.ZodTypeAny, {
-            categoryBucket?: string | undefined;
-            transactionIds?: string[] | undefined;
-        }, {
-            categoryBucket?: string | undefined;
-            transactionIds?: string[] | undefined;
-        }>>;
+    };
+    targetRouteSchemas: {
+        getTargets: z.ZodOptional<z.ZodString>;
     };
     transactionRouteSchemas: {
         createTransaction: z.ZodObject<{
@@ -157,12 +151,12 @@ declare const _default: {
         updateTransaction: z.ZodObject<{
             transactionId: z.ZodString;
             data: z.ZodObject<{
+                category: z.ZodString;
+                account: z.ZodString;
                 date: z.ZodOptional<z.ZodDate>;
                 contact: z.ZodOptional<z.ZodString>;
                 description: z.ZodOptional<z.ZodString>;
-                category: z.ZodString;
                 amount: z.ZodOptional<z.ZodNumber>;
-                account: z.ZodString;
             }, "strip", z.ZodTypeAny, {
                 category: string;
                 account: string;
@@ -200,6 +194,7 @@ declare const _default: {
             transactionId: string;
         }>;
         deleteTransaction: z.ZodString;
+        getCategoriesFromTransactions: z.ZodArray<z.ZodString, "many">;
     };
 };
 export default _default;

@@ -79,12 +79,9 @@ exports.default = {
     },
     categoryRouteSchemas: {
         getCategory: zod_1.z.string().nonempty('Category ID is required.'),
-        getCategories: zod_1.z
-            .object({
-            categoryBucket: zod_1.z.string().optional(),
-            transactionIds: zod_1.z.array(zod_1.z.string()).optional(),
-        })
-            .optional(),
+    },
+    targetRouteSchemas: {
+        getTargets: zod_1.z.string().optional(),
     },
     transactionRouteSchemas: {
         createTransaction: zod_1.z.object({
@@ -113,5 +110,6 @@ exports.default = {
             }),
         }),
         deleteTransaction: zod_1.z.string().nonempty('Transaction ID is required.'),
+        getCategoriesFromTransactions: zod_1.z.array(zod_1.z.string()),
     },
 };
