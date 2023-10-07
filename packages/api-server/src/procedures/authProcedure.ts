@@ -1,11 +1,11 @@
 import passport, { AuthenticateCallback } from 'passport';
 import { TRPCError } from '@trpc/server';
 
-import { Context, middleware, publicProcedure } from '@/config/trpc';
+import { InitialContext, middleware, publicProcedure } from '@/config/trpc';
 import { authErrors } from '@/errorMessages';
 
 const passportAuthCallback = (
-  ctx: Context,
+  ctx: InitialContext,
   res: (value: unknown) => void,
   rej: (reason?: any) => void
 ): AuthenticateCallback => (

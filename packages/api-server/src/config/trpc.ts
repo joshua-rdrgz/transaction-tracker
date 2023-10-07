@@ -20,7 +20,7 @@ export function createContext({ req, res }: CreateExpressContextOptions) {
 export type InitialContext = inferAsyncReturnType<typeof createContext>;
 export type Context = CreateExpressContextOptions & { user: { id: string } };
 
-const t = initTRPC.context<Context>().create({ errorFormatter });
+const t = initTRPC.context<InitialContext>().create({ errorFormatter });
 
 export const router = t.router;
 export const middleware = t.middleware;
