@@ -1,20 +1,20 @@
 import { format } from 'date-fns';
-import { Prisma } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
 import { useTransactions } from '@/features/transactions/hooks/useTransactions';
+import {
+  CategoriesInTransactions,
+  useCategoriesInTransactions,
+} from '@/features/transactions/hooks/useCategoriesInTransactions';
 import { CreateTransaction } from '@/features/transactions/components/CreateTransaction';
 import { TransactionsDropdown } from '@/features/transactions/components/TransactionsDropdown';
-import {
-  useCategories,
-  ICategoriesInTransactions,
-} from '@/features/categories/hooks/useCategories';
 import { DataTable } from '@/ui/data-table';
 import { TableCell } from '@/ui/table-cell';
 import { currency } from '@/lib/utils';
+import { ReceivedTransaction } from '@/lib/types';
 
 const getTransactionColumns = (
-  categories: ICategoriesInTransactions
-): ColumnDef<Prisma.TransactionCreateManyInput>[] => [
+  categories: CategoriesInTransactions
+): ColumnDef<ReceivedTransaction>[] => [
   {
     accessorKey: 'date',
     header: ({ column }) => {
@@ -72,7 +72,7 @@ const getTransactionColumns = (
     header: () => <TableCell>Category</TableCell>,
     cell: ({ row }) => {
       const currentCategoryId = row.getValue('categoryId');
-      const category = categories.find(
+      const category = categories?.find(
         (category) => category.categoryId === currentCategoryId
       );
       return <TableCell>{category?.category.name}</TableCell>;
@@ -116,14 +116,14 @@ interface ITransactionsTableProps {
 
 export function TransactionsTable({ filters }: ITransactionsTableProps) {
   const { isLoadingTransactions, transactions } = useTransactions(filters);
-  const { isLoadingCategories, categories } = useCategories({
-    transactionIds: transactions?.map((transaction) => transaction.id),
-  });
+  const { isLoadingCategories, categories } = useCategoriesInTransactions(
+    transactions?.map((transaction) => transaction.id) || []
+  );
 
   return (
     <div className='flex flex-col gap-6'>
       <DataTable
-        columns={getTransactionColumns(categories as ICategoriesInTransactions)}
+        columns={getTransactionColumns(categories)}
         data={transactions || []}
         isLoading={isLoadingTransactions || isLoadingCategories}
         noResultsText='No transactions.  Add one to get started!'

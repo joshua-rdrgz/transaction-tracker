@@ -6,6 +6,10 @@ type TransactionIds = z.infer<
   typeof sharedZodSchemas.transactionRouteSchemas.getCategoriesFromTransactions
 >;
 
+export type CategoriesInTransactions = ReturnType<
+  typeof useCategoriesInTransactions
+>['categories'];
+
 export const useCategoriesInTransactions = (transactionIds: TransactionIds) => {
   const {
     isLoading: isLoadingCategories,

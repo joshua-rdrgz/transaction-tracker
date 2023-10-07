@@ -1,17 +1,14 @@
 import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Cell } from 'recharts';
-import { Prisma } from '@prisma/client';
 import { useTransactions } from '@/features/transactions/hooks/useTransactions';
-import {
-  ICategoriesInTransactions,
-  useCategories,
-} from '@/features/categories/hooks/useCategories';
 import { generateRandomHexColor } from '@/lib/hexColorUtils';
-import { IRechartsPieData } from '@/lib/types';
+import { IRechartsPieData, ReceivedTransaction } from '@/lib/types';
 import { PieChart } from '@/ui/pie-chart';
 import { Spinner } from '@/ui/spinner';
 import { Filter } from '@/ui/filter';
+import { useCategoriesInTransactions } from '@/features/transactions/hooks/useCategoriesInTransactions';
+import { CategoriesInTransactions } from '@/features/transactions/hooks/useCategoriesInTransactions';
 
 interface IAccountTransactionsPieChartProps {
   accountId: string;
@@ -23,9 +20,9 @@ export const AccountTransactionsPieChart: React.FC<IAccountTransactionsPieChartP
   const { isLoadingTransactions, transactions } = useTransactions({
     accountId,
   });
-  const { isLoadingCategories, categories } = useCategories({
-    transactionIds: transactions?.map((transaction) => transaction.id),
-  });
+  const { isLoadingCategories, categories } = useCategoriesInTransactions(
+    transactions?.map((transaction) => transaction.id) || []
+  );
   const [transactionsData, setTransactionsData] = useState<
     IRechartsPieData[] | null
   >(null);
@@ -49,10 +46,7 @@ export const AccountTransactionsPieChart: React.FC<IAccountTransactionsPieChartP
       if (transactions && categories)
         setTransactionsData(
           transformTransactions(
-            groupTransactionsByCategory(
-              transactions,
-              categories as ICategoriesInTransactions
-            ),
+            groupTransactionsByCategory(transactions, categories),
             displayIncomeValues
           )
         );
@@ -130,9 +124,7 @@ function transformTransactions(
   );
 }
 
-function groupTransactionsByContact(
-  transactions: Prisma.TransactionCreateManyAccountInput[] = []
-) {
+function groupTransactionsByContact(transactions: ReceivedTransaction[] = []) {
   const chartItems: IRechartsPieData[] = [];
 
   const uniqueContacts = new Set(
@@ -152,15 +144,15 @@ function groupTransactionsByContact(
       (chartItem) => chartItem.label === transaction.contact
     ) as typeof chartItems[number];
 
-    foundChartItem.value += transaction.amount;
+    foundChartItem.value += Number(transaction.amount);
   });
 
   return chartItems;
 }
 
 function groupTransactionsByCategory(
-  transactions: Prisma.TransactionCreateManyAccountInput[] = [],
-  categories: ICategoriesInTransactions = []
+  transactions: ReceivedTransaction[] = [],
+  categories: CategoriesInTransactions = []
 ) {
   const chartItems: IRechartsPieData[] = [];
 
@@ -186,7 +178,7 @@ function groupTransactionsByCategory(
       (chartItem) => chartItem.categoryId === transaction.categoryId
     ) as typeof chartItems[number];
 
-    foundChartItem.value += transaction.amount;
+    foundChartItem.value += Number(transaction.amount);
   });
 
   return chartItems;
