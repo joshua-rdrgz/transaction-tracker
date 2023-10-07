@@ -1,73 +1,66 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider     = "mysql"
   url          = env("DATABASE_URL")
   relationMode = "prisma"
 }
 
-generator client {
-  provider = "prisma-client-js"
-}
-
 model User {
-  id                   String    @id @default(cuid())
+  id                   String        @id @default(cuid())
   name                 String
-  email                String    @unique
+  email                String        @unique
   passwordHash         String
   avatar               String?
   passwordResetToken   String?
   passwordResetExpires DateTime?
-
-  accounts     Account[]
-  categories   Category[]
-  transactions Transaction[]
+  accounts             Account[]
+  categories           Category[]
+  transactions         Transaction[]
+  Target               Target[]
 }
 
 model Account {
-  id      String  @id @default(cuid())
-  userId  String
-  name    String
-  bank    String
-  balance Decimal
-
+  id           String        @id @default(cuid())
+  userId       String
+  name         String
+  bank         String
+  balance      Decimal
   transactions Transaction[]
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
 
 model Category {
-  id       String @id @default(cuid())
-  userId   String
-  bucketId String
-  name     String
-
-  targets      Target[]
-  transactions Transaction[]
-
-  user           User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  categoryBucket CategoryBucket @relation(fields: [bucketId], references: [id], onDelete: Cascade)
+  id             String        @id @default(cuid())
+  userId         String
+  parentId       String?
+  name           String
+  targets        Target[]
+  transactions   Transaction[]
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  parentCategory Category?     @relation("Subcategories", fields: [parentId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  subcategories  Category[]    @relation("Subcategories")
 
   @@index([userId])
-  @@index([bucketId])
-}
-
-model CategoryBucket {
-  id   String @id @default(cuid())
-  name String
-
-  categories Category[]
+  @@index([parentId])
 }
 
 model Target {
+  userId     String
   date       DateTime
-  target     Int
+  target     Int      @default(0)
   categoryId String
 
   category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@id([date, categoryId])
   @@index([categoryId])
+  @@index([userId])
 }
 
 model Transaction {
@@ -78,11 +71,10 @@ model Transaction {
   date        DateTime @default(now())
   contact     String
   description String
-  amount      Int
-
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  account  Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  category Category @relation(fields: [categoryId], references: [id])
+  amount      Decimal
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  account     Account  @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  category    Category @relation(fields: [categoryId], references: [id])
 
   @@index([userId])
   @@index([accountId])
