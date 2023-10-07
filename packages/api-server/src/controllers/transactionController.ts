@@ -2,6 +2,9 @@ import sharedZodSchemas from 'shared-zod-schemas';
 import prisma, { prismaTransaction } from '@/config/prisma';
 import { authProcedure } from '@/procedures/authProcedure';
 
+// ****
+// CRUD OPERATIONS
+
 const createTransaction = authProcedure
   .input(sharedZodSchemas.transactionRouteSchemas.createTransaction)
   .mutation(async ({ input, ctx }) => {
@@ -45,9 +48,36 @@ const deleteTransaction = authProcedure
     return null;
   });
 
+// ****
+// SPECIAL OPERATIONS
+
+const getCategoriesFromTransactions = authProcedure
+  .input(sharedZodSchemas.transactionRouteSchemas.getCategoriesFromTransactions)
+  .query(async ({ input, ctx }) => {
+    const categories = await prisma.transaction.findMany({
+      where: {
+        userId: ctx.user.id,
+        id: {
+          in: input,
+        },
+      },
+      select: {
+        categoryId: true,
+        category: {
+          select: {
+            name: true,
+          },
+        },
+      },
+    });
+
+    return categories;
+  });
+
 export default {
   createTransaction,
   getTransactions,
   updateTransaction,
   deleteTransaction,
+  getCategoriesFromTransactions,
 };

@@ -15,37 +15,15 @@ const getCategory = authProcedure
     return category;
   });
 
-const getCategories = authProcedure
-  .input(sharedZodSchemas.categoryRouteSchemas.getCategories)
-  .query(async ({ input, ctx }) => {
-    if (input?.transactionIds) {
-      const categories = await prisma.transaction.findMany({
-        where: {
-          id: {
-            in: input.transactionIds,
-          },
-        },
-        select: {
-          categoryId: true,
-          category: {
-            select: {
-              name: true,
-            },
-          },
-        },
-      });
-
-      return categories;
-    }
-    const categories = await prisma.category.findMany({
-      where: {
-        userId: ctx.user.id,
-        bucketId: input?.categoryBucket,
-      },
-    });
-
-    return categories;
+const getCategories = authProcedure.query(async ({ input, ctx }) => {
+  const categories = await prisma.category.findMany({
+    where: {
+      userId: ctx.user.id,
+    },
   });
+
+  return categories;
+});
 
 export default {
   getCategory,
