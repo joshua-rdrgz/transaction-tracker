@@ -10,6 +10,8 @@ import {
   getFilteredRowModel,
   useReactTable,
   VisibilityState,
+  ExpandedState,
+  getExpandedRowModel,
 } from '@tanstack/react-table';
 
 import {
@@ -25,38 +27,48 @@ import { DataTablePagination } from '@/ui/data-table-pagination';
 import { DataTableViewOptions } from '@/ui/data-table-view-options';
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
+  // BASE
   data: TData[];
-  toggleColumns?: boolean;
-  defaultPageSize?: number;
-  pageSizeOptions?: number[];
-  columnVisibility?: VisibilityState;
+  columns: ColumnDef<TData, TValue>[];
   isLoading?: boolean;
   noResultsText?: string;
+
+  // PAGINATION
+  includePagination?: boolean;
+  defaultPageSize?: number;
+  pageSizeOptions?: number[];
+
+  // EXPANDABLE ROWS
+  expandableRows?: boolean;
+  getSubRows?(originalRow: TData, index: number): TData[] | undefined;
+
+  // COLUMN VISIBILITY
+  toggleColumns?: boolean;
+  columnVisibility?: VisibilityState;
 }
 
 export function DataTable<TData, TValue>({
-  columns,
   data,
-  toggleColumns = true,
-  defaultPageSize = 10,
-  pageSizeOptions = [5, 10, 15, 20, 25],
-  columnVisibility,
+  columns,
   isLoading,
   noResultsText,
+  includePagination = true,
+  defaultPageSize = 10,
+  pageSizeOptions = [5, 10, 15, 20, 25],
+  expandableRows = false,
+  getSubRows,
+  toggleColumns = true,
+  columnVisibility,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [expanded, setExpanded] = useState<ExpandedState>({});
 
   const table = useReactTable({
     data,
     columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    getFilteredRowModel: getFilteredRowModel(),
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
+
+    // STATE
     initialState: {
       pagination: {
         pageSize: defaultPageSize,
@@ -66,7 +78,23 @@ export function DataTable<TData, TValue>({
     state: {
       sorting,
       columnFilters,
+      expanded: expandableRows ? expanded : undefined,
     },
+
+    // CHANGE FUNCTIONS
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
+    onExpandedChange: expandableRows ? setExpanded : undefined,
+
+    // MODELS
+    getCoreRowModel: getCoreRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    getPaginationRowModel: includePagination
+      ? getPaginationRowModel()
+      : undefined,
+    getExpandedRowModel: expandableRows ? getExpandedRowModel() : undefined,
+    getSubRows: expandableRows ? getSubRows : undefined,
   });
 
   const tableBody = table.getRowModel().rows?.length ? (
@@ -96,10 +124,15 @@ export function DataTable<TData, TValue>({
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id} className='bg-secondary'>
                 {headerGroup.headers.map((header) => {
+                  const className =
+                    header.colSpan > 1
+                      ? 'custom-class-has-button bg-muted'
+                      : 'custom-class-has-button';
                   return (
                     <TableHead
                       key={header.id}
-                      className='custom-class-has-button'
+                      className={className}
+                      colSpan={header.colSpan}
                     >
                       {header.isPlaceholder
                         ? null
@@ -126,11 +159,13 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination
-        table={table}
-        pageSizes={pageSizeOptions}
-        isLoading={isLoading}
-      />
+      {includePagination && (
+        <DataTablePagination
+          table={table}
+          pageSizes={pageSizeOptions}
+          isLoading={isLoading}
+        />
+      )}
     </>
   );
 }

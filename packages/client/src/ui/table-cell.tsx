@@ -5,14 +5,25 @@ import { Input } from '@/ui/input';
 import { useState } from 'react';
 
 interface ITableCellProps {
+  // BASE
   children: React.ReactNode;
   className?: string;
   isHeader?: boolean;
+
+  // SORTABLE
   isSortable?: boolean;
+  sortOnClick?(): void;
+
+  // FILTERABLE
   isFilterable?: boolean;
   filterValue?: string;
-  sortOnClick?(): void;
   filterOnChange?(e: React.ChangeEvent<HTMLInputElement>): void;
+
+  // EXPANDABLE
+  isExpandable?: boolean;
+  cellCanExpand?: boolean;
+  expandOnClick?(): void;
+  expandButtonContent?: React.ReactNode;
 }
 
 export const TableCell: React.FC<ITableCellProps> = ({
@@ -20,10 +31,14 @@ export const TableCell: React.FC<ITableCellProps> = ({
   className,
   isHeader,
   isSortable,
+  sortOnClick,
   isFilterable,
   filterValue,
-  sortOnClick,
   filterOnChange,
+  isExpandable,
+  cellCanExpand,
+  expandOnClick,
+  expandButtonContent,
 }) => {
   const [filterShow, setFilterShow] = useState(false);
 
@@ -61,6 +76,23 @@ export const TableCell: React.FC<ITableCellProps> = ({
             />
           )}
         </div>
+      );
+    }
+
+    if (isExpandable) {
+      return (
+        <>
+          {cellCanExpand && (
+            <Button
+              variant='ghost'
+              className={cn('hover:bg-muted', className)}
+              onClick={expandOnClick}
+            >
+              {expandButtonContent}
+            </Button>
+          )}
+          {children}
+        </>
       );
     }
   }
