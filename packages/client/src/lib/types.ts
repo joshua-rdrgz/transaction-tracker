@@ -1,4 +1,5 @@
 import { ControllerRenderProps, FieldPath, FieldValues } from 'react-hook-form';
+import { Transaction, Target } from '@prisma/client';
 
 type QueryFn<T> = () => Promise<T>;
 
@@ -48,3 +49,9 @@ export interface IRechartsAreaData {
 export interface IHookOptions {
   useReactRouterLoader: boolean;
 }
+
+export type ReceivedTarget = Omit<Target, 'date'> & { date: string };
+export type ReceivedTransaction = Omit<Omit<Transaction, 'date'>, 'amount'> & {
+  date: string;
+  amount: string;
+};

@@ -1,15 +1,10 @@
 import { useEffect, useState } from 'react';
-import { Category, Target, Transaction } from '@prisma/client';
+import { Category } from '@prisma/client';
 import { useCategories } from '@/features/categories/hooks/useCategories';
 import { useTargets } from '@/features/targets/hooks/useTargets';
 import { ICategoryData } from '@/features/budget-overview/components/BudgetOverviewTable';
 import { useTransactions } from '@/features/transactions/hooks/useTransactions';
-
-type ReceivedTarget = Omit<Target, 'date'> & { date: string };
-type ReceivedTransaction = Omit<Omit<Transaction, 'date'>, 'amount'> & {
-  date: string;
-  amount: string;
-};
+import { ReceivedTarget, ReceivedTransaction } from '@/lib/types';
 
 export const useFormatBudgetData = () => {
   const { isLoadingCategories, categories } = useCategories();
