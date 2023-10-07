@@ -41,7 +41,7 @@ const sendAuthResponse = <TUser extends { [key: string]: any }>(
   return {
     status: 'success',
     data: {
-      user: userWithoutSensitiveData(user as Exclude<typeof user, null>),
+      user: userWithoutSensitiveData(user),
     },
   };
 };
