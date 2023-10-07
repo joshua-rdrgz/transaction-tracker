@@ -1,17 +1,26 @@
-import { PrismaClient, User } from '@prisma/client';
-import { TRPCError } from '@trpc/server';
-
 import { z } from 'zod';
 import sharedZodSchemas from 'shared-zod-schemas';
-
-import { hashPassword, verifyCorrectPassword } from '@/utils/bcrypt';
+import { PrismaClient, User } from '@prisma/client';
+import { TRPCError } from '@trpc/server';
 import { authErrors } from '@/errorMessages';
+import prisma from '@/config/prisma';
+import { hashPassword, verifyCorrectPassword } from '@/utils/bcrypt';
+import createNewUserCategories from '@/utils/createNewUserCategories';
 
-type SignupInput = z.infer<typeof sharedZodSchemas.authRouteSchemas.signup>;
+// ****
+// TYPES
+export type SignupInput = z.infer<
+  typeof sharedZodSchemas.authRouteSchemas.signup
+>;
+
 type LoginInput = z.infer<typeof sharedZodSchemas.authRouteSchemas.login>;
+
 type UpdatePasswordInput = z.infer<
   typeof sharedZodSchemas.authRouteSchemas.updateCurUserPassword
 > & { userId: string };
+
+// ****
+// PRISMA MODEL
 
 class PrismaUser {
   constructor(private readonly prismaUser: PrismaClient['user']) {}
@@ -20,51 +29,41 @@ class PrismaUser {
   // ROUTE FUNCTIONS
 
   async createUser(input: SignupInput): Promise<User> {
-    return await this.prismaUser.create({
+    const user = await prisma.user.create({
       data: {
         name: input.name,
         email: input.email,
         passwordHash: await hashPassword(input.password),
         accounts: {
-          create: [
-            {
-              name: 'Initial Account',
-              bank: 'Initial Bank',
-              balance: 0,
-            },
-          ],
+          create: {
+            name: 'My Account',
+            bank: "My Account's Bank",
+            balance: 0,
+          },
         },
         categories: {
-          create: [
-            {
-              name: 'Initial Category',
-              categoryBucket: {
-                create: {
-                  name: 'Initial Category Bucket',
-                },
-              },
-              targets: {
-                create: [
-                  {
-                    date: new Date(),
-                    target: 0,
-                  },
-                ],
-              },
-            },
-          ],
+          create: [{ name: 'Income' }, { name: 'Expenses' }],
         },
       },
       include: {
-        accounts: true,
-        categories: {
-          include: {
-            categoryBucket: true,
-            targets: true,
-          },
-        },
+        categories: true,
       },
     });
+
+    const incomeCategoryId = user.categories.find(
+      (category) => category.name === 'Income'
+    )?.id;
+    const expenseCategoryId = user.categories.find(
+      (category) => category.name === 'Expenses'
+    )?.id;
+
+    const newUser = await createNewUserCategories(
+      user.id,
+      incomeCategoryId!,
+      expenseCategoryId!
+    );
+
+    return newUser!;
   }
 
   async loginUser(input: LoginInput): Promise<User> {
