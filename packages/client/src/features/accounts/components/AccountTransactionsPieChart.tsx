@@ -91,6 +91,7 @@ export const AccountTransactionsPieChart: React.FC<IAccountTransactionsPieChartP
         />
       </div>
       <PieChart
+        containerHeight={300}
         data={transactionsData || []}
         render={(entry, entryIdx) => (
           <Cell
