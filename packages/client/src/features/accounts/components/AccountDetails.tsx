@@ -1,12 +1,14 @@
 import { currency } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/ui/card';
 import { ReturnTypeUseAccount } from '@/features/accounts/hooks/useAccount';
+import { useAccountBalance } from '@/features/accounts/hooks/useAccountBalance';
 
 interface IAccountDetailsProps {
   account: ReturnTypeUseAccount;
 }
 
 export const AccountDetails: React.FC<IAccountDetailsProps> = ({ account }) => {
+  const { accountBalance } = useAccountBalance(account.id);
   const cards = [
     {
       title: 'Account Name',
@@ -18,10 +20,10 @@ export const AccountDetails: React.FC<IAccountDetailsProps> = ({ account }) => {
     },
     {
       title: 'Current Balance',
-      content: currency(account.balance as number),
+      content: currency(accountBalance || (account.balance as number)),
     },
     {
-      title: 'Difference',
+      title: 'Difference From Last Month',
       content: 'difference',
     },
   ];
