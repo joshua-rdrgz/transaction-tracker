@@ -4,7 +4,7 @@ import { addMonths, format } from 'date-fns';
 import { DataTable } from '@/ui/data-table';
 import { TableCell } from '@/ui/table-cell';
 import { currency } from '@/lib/utils';
-import { useFormatBudgetData } from '@/features/budget-overview/util/useFormatBudgetData';
+import { useFormatBudgetData } from '@/features/budget-overview/hooks/useFormatBudgetData';
 
 interface ITimePeriod {
   id: string;
