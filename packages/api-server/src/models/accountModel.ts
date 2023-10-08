@@ -36,7 +36,7 @@ class PrismaAccount {
     });
 
     const balance = transactions.reduce(
-      (acc, transaction) => (acc += transaction.amount),
+      (acc, transaction) => acc + Number(transaction.amount),
       Number(initialBalance)
     );
 
