@@ -39,7 +39,7 @@ export const AccountTransactionsLineChart: React.FC<IAccountTransactionsLineChar
         total: getTransactionsOnDate(
           date,
           transactions as Exclude<typeof transactions, undefined>
-        ).reduce((acc, transaction) => acc + transaction.amount, 0),
+        ).reduce((acc, transaction) => acc + Number(transaction.amount), 0),
       }));
 
       setTransactionsData(data);
