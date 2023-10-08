@@ -16,9 +16,7 @@ import { ICategoryData } from '@/features/budget-overview/components/BudgetOverv
 export const SelectCategory = <T extends FieldValues, U extends FieldPath<T>>({
   field,
 }: ICustomFormComponentProps<T, U>) => {
-  const { isLoadingBudgetData, budgetData } = useFormatBudgetData();
-
-  if (isLoadingBudgetData) return;
+  const { budgetData } = useFormatBudgetData();
 
   return (
     <Select defaultValue={field?.value} onValueChange={field?.onChange}>
