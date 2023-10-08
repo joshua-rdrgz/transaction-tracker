@@ -5,6 +5,7 @@ export const useUpdateAccount = () => {
   const { isLoading, mutate } = trpc.accounts.updateAccount.useMutation({
     onSuccess() {
       utils.accounts.readAccounts.invalidate();
+      utils.accounts.getAccountBalance.invalidate();
     },
   });
 
