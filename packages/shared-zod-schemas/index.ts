@@ -102,6 +102,7 @@ export default {
         categoryId: z.string().optional(),
       })
       .optional(),
+    getTransaction: z.string().nonempty('Transaction ID is required.'),
     updateTransaction: z.object({
       transactionId: z.string().nonempty('Transaction ID is required.'),
       data: z.object({

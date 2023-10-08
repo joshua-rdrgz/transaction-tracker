@@ -27,6 +27,19 @@ const getTransactions = authProcedure
     return transactions;
   });
 
+const getTransaction = authProcedure
+  .input(sharedZodSchemas.transactionRouteSchemas.getTransaction)
+  .query(async ({ input, ctx }) => {
+    const transaction = await prisma.transaction.findUnique({
+      where: {
+        userId: ctx.user.id,
+        id: input,
+      },
+    });
+
+    return transaction;
+  });
+
 const updateTransaction = authProcedure
   .input(sharedZodSchemas.transactionRouteSchemas.updateTransaction)
   .mutation(async ({ input, ctx }) => {
@@ -77,6 +90,7 @@ const getCategoriesFromTransactions = authProcedure
 export default {
   createTransaction,
   getTransactions,
+  getTransaction,
   updateTransaction,
   deleteTransaction,
   getCategoriesFromTransactions,
