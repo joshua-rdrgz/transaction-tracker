@@ -45,7 +45,7 @@ function renderCategoryOptions(categories: ICategoryData[]): React.ReactNode {
 
     if (isRootCategory) {
       return (
-        <SelectGroup className='mb-5'>
+        <SelectGroup key={category.id} className='mb-5'>
           <SelectLabel className='text-2xl text-secondary'>
             {category.name}
           </SelectLabel>
@@ -62,12 +62,10 @@ function renderCategoryOptions(categories: ICategoryData[]): React.ReactNode {
     }
 
     return hasSubcategories ? (
-      <>
-        <SelectGroup>
-          <SelectLabel className='text-muted'>{category.name}</SelectLabel>
-          {renderCategoryOptions(category.subcategories!)}
-        </SelectGroup>
-      </>
+      <SelectGroup key={category.id}>
+        <SelectLabel className='text-muted'>{category.name}</SelectLabel>
+        {renderCategoryOptions(category.subcategories!)}
+      </SelectGroup>
     ) : (
       <SelectItem key={category.id} value={category.id}>
         {category.name}
