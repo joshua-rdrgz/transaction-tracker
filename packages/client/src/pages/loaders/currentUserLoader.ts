@@ -7,13 +7,13 @@ const query = {
   queryFn: async () => await trpcVanillaClient.getCurrentUser.query(),
 };
 
-type ReturnTypeQueryFn = ReturnType<typeof query.queryFn>;
+export type CurrentUserLoader = ReturnType<typeof query.queryFn>;
 
 export const currentUserLoader = (
   queryClient: QueryClient
-): LoaderFunction<ReturnTypeQueryFn> => async () => {
+): LoaderFunction<CurrentUserLoader> => async () => {
   return (
-    queryClient.getQueryData<ReturnTypeQueryFn>(query.queryKey) ??
-    (await queryClient.fetchQuery<ReturnTypeQueryFn>(query))
+    queryClient.getQueryData<CurrentUserLoader>(query.queryKey) ??
+    (await queryClient.fetchQuery<CurrentUserLoader>(query))
   );
 };

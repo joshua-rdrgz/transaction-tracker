@@ -1,12 +1,9 @@
 import { useLoaderData } from 'react-router-dom';
 import { trpc } from '@/config/trpc';
-import { currentUserLoader } from '@/pages/loaders/currentUserLoader';
-import { ReturnTypeLoader } from '@/lib/utils';
+import { CurrentUserLoader } from '@/pages/loaders/currentUserLoader';
 
 export const useUser = () => {
-  const initialData = useLoaderData() as ReturnTypeLoader<
-    typeof currentUserLoader
-  >;
+  const initialData = useLoaderData() as CurrentUserLoader;
 
   const {
     isLoading,
