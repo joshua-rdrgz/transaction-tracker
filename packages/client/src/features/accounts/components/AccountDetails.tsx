@@ -1,3 +1,4 @@
+import { startOfMonth } from 'date-fns';
 import { currency } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/ui/card';
 import { ReturnTypeUseAccount } from '@/features/accounts/hooks/useAccount';
@@ -8,7 +9,14 @@ interface IAccountDetailsProps {
 }
 
 export const AccountDetails: React.FC<IAccountDetailsProps> = ({ account }) => {
-  const { accountBalance } = useAccountBalance(account.id);
+  const { accountBalance } = useAccountBalance({ accountId: account.id });
+  const { accountBalance: acctBalBeginningOfMonth } = useAccountBalance({
+    accountId: account.id,
+    toDate: new Date(startOfMonth(Date.now())),
+  });
+
+  const acctDifference = accountBalance! - acctBalBeginningOfMonth!; // accountPageLoader ensures data
+
   const cards = [
     {
       title: 'Account Name',
@@ -20,11 +28,14 @@ export const AccountDetails: React.FC<IAccountDetailsProps> = ({ account }) => {
     },
     {
       title: 'Current Balance',
-      content: currency(accountBalance || (account.balance as number)),
+      content: currency(accountBalance!), // accountPageLoader ensures data
     },
     {
-      title: 'Difference From Last Month',
-      content: 'difference',
+      title: 'Diff From Beginning of Month',
+      content:
+        acctDifference > 0
+          ? `+ ${currency(acctDifference)}`
+          : currency(acctDifference),
     },
   ];
 

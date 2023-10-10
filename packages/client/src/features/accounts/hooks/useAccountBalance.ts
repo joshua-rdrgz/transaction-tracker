@@ -1,10 +1,16 @@
+import sharedZodSchemas from 'shared-zod-schemas';
+import { z } from 'zod';
 import { trpc } from '@/config/trpc';
 
-export const useAccountBalance = (accountId: string) => {
+type AccountBalanceOptions = z.infer<
+  typeof sharedZodSchemas.accountRouteSchemas.getAccountBalance
+>;
+
+export const useAccountBalance = (opts: AccountBalanceOptions) => {
   const {
     isLoading: isCalculatingBalance,
     data: accountBalance,
-  } = trpc.accounts.getAccountBalance.useQuery(accountId);
+  } = trpc.accounts.getAccountBalance.useQuery(opts);
 
   return {
     isCalculatingBalance,
