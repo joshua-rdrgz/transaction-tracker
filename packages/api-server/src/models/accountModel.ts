@@ -25,14 +25,26 @@ class PrismaAccount {
     return account;
   }
 
-  async getAccountBalance(accountId: string, userId: string) {
+  async getAccountBalance(
+    accountId: string,
+    userId: string,
+    fromDate?: Date,
+    toDate?: Date
+  ) {
     const { balance: initialBalance } = await this.readAccount(
       accountId,
       userId
     );
 
     const transactions = await prisma.transaction.findMany({
-      where: { userId, accountId },
+      where: {
+        userId,
+        accountId,
+        date: {
+          lt: toDate,
+          gt: fromDate,
+        },
+      },
     });
 
     const balance = transactions.reduce(

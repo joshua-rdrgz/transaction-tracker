@@ -75,7 +75,11 @@ exports.default = {
             }),
         }),
         deleteAccount: zod_1.z.string().nonempty('Account ID is required.'),
-        getAccountBalance: zod_1.z.string().nonempty('Account ID is required.'),
+        getAccountBalance: zod_1.z.object({
+            accountId: zod_1.z.string().nonempty('Account ID is required.'),
+            fromDate: zod_1.z.coerce.date().optional(),
+            toDate: zod_1.z.coerce.date().optional(),
+        }),
     },
     categoryRouteSchemas: {
         getCategory: zod_1.z.string().nonempty('Category ID is required.'),

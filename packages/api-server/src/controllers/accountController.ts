@@ -93,10 +93,12 @@ const deleteAccount = authProcedure
 
 const getAccountBalance = authProcedure
   .input(zodSchemas.accountRouteSchemas.getAccountBalance)
-  .query(async ({ input: accountId, ctx }) => {
+  .query(async ({ input, ctx }) => {
     const accountBalance = await prismaAccount.getAccountBalance(
-      accountId,
-      ctx.user.id
+      input.accountId,
+      ctx.user.id,
+      input.fromDate,
+      input.toDate
     );
 
     return accountBalance;
