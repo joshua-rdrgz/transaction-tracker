@@ -1,0 +1,15 @@
+FROM node:19.6-bullseye AS build
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+COPY ./libs /usr/libs
+COPY ./packages/api-server /usr/src/api-server
+COPY ./packages/client /usr/src/app/
+
+RUN --mount=type=cache,target=/usr/src/app/.npm \
+  npm set cache /usr/src/app/.npm && \
+  npm install
+
+CMD ["npm", "run", "dev"]

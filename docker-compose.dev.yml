@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+  api-server:
+    container_name: api-server
+    build:
+      context: ./
+      dockerfile: ./packages/api-server/Dockerfile.dev
+    init: true
+    volumes:
+      - type: bind
+        source: ./libs
+        target: /usr/libs
+      - type: bind
+        source: ./packages/api-server
+        target: /usr/src/app
+      - type: volume
+        target: /usr/src/app/node_modules
+    networks:
+      - development
+    ports:
+      - 3000:3000
+    restart: unless-stopped
+  
+  client-vite:
+    container_name: client-vite
+    build:
+      context: ./
+      dockerfile: ./packages/client/Dockerfile.vite
+    init: true
+    volumes:
+      - type: bind
+        source: ./packages/client
+        target: /usr/src/app
+      - type: volume
+        target: /usr/src/app/node_modules
+      - type: bind
+        source: ./libs
+        target: /usr/libs
+      - type: bind
+        source: ./packages/client/vite.config.ts
+        target: /usr/src/app/vite.config.ts
+    networks:
+      - development
+    ports:
+      - 5173:5173
+    
+networks:
+  development:

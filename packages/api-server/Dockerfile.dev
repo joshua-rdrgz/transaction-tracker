@@ -1,0 +1,23 @@
+# STAGE 1 - Build application
+FROM node:19.6-bullseye-slim AS base
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+# Install Base Dependencies Needed
+RUN --mount=type=cache,target=/var/cache/apt \
+  apt-get update && apt-get install -y make g++ python3
+
+
+# STAGE 2 - Build development image
+FROM base as dev
+
+COPY ./libs /usr/libs
+COPY ./packages/api-server /usr/src/app/
+
+RUN --mount=type=cache,target=/usr/src/app/.npm \
+  npm set cache /usr/src/app/.npm && \
+  npm install
+
+CMD ["npm", "run", "dev"]

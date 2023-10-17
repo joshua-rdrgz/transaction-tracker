@@ -1,0 +1,35 @@
+# Stage 1 - Build Application
+FROM node:19.6-bullseye-slim AS base
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+# Install Base Dependencies Needed
+RUN --mount=type=cache,target=/var/cache/apt \
+  apt-get update && apt-get install -y make g++ python3
+
+COPY ./libs /usr/libs
+COPY ./packages/api-server /usr/src/app/
+
+RUN --mount=type=cache,target=/usr/src/app/.npm \
+  npm set cache /usr/src/app/.npm && \
+  npm install
+
+RUN npm run build:prod
+
+
+# Stage 2 - Build Production Image
+FROM base as production
+
+ENV NODE_ENV production
+
+RUN npm install pm2 -g
+
+USER node
+
+COPY --chown=node:node --from=base /usr/src/app/dist .
+
+EXPOSE 3000
+
+CMD ["pm2-runtime", "npm", "--", "run", "start"]
