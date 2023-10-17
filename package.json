@@ -5,14 +5,17 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "dev": "npm run dev:client & npm run dev:api-server",
+    "dev:client": "npm run dev --workspace=budgetbook-client",
+    "dev:api-server": "npm run dev --workspace=budgetbook-api-server",
     "start": "npm run start:client & npm run start:api-server",
-    "start:client": "npm run dev --workspace=client",
-    "start:api-server": "npm start --workspace=api-server",
-    "update:shared-zod-schemas": "npm run build --workspace=shared-zod-schemas & npm update shared-zod-schemas --workspace=api-server --workspace=client"
+    "start:client": "npm run dev --workspace=budgetbook-client",
+    "start:api-server": "npm start --workspace=budgetbook-api-server",
+    "update:shared-zod-schemas": "npm run build --workspace=libs/shared-zod-schemas & npm update shared-zod-schemas --workspace=api-server --workspace=client"
   },
   "workspaces": [
+    "libs/*",
     "./packages/api-server",
-    "./packages/client",
-    "./packages/shared-zod-schemas"
+    "./packages/client"
   ]
 }
