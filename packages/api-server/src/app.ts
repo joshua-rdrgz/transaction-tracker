@@ -39,6 +39,7 @@ export default function() {
       message: 'Too many requests from this IP, please try again in an hour!',
     }),
   });
+  app.set('trust proxy', 1);
   app.use('/api', limiter);
 
   app.use(cookieParser());

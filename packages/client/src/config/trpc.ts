@@ -3,14 +3,14 @@ import {
   createTRPCReact,
   httpBatchLink,
 } from '@trpc/react-query';
-import { AppRouter } from 'api-server';
+import { AppRouter } from 'budgetbook-api-server';
 
 export const trpc = createTRPCReact<AppRouter>();
 
 const clientConfig = {
   links: [
     httpBatchLink({
-      url: 'http://localhost:3000/api/v1/trpc',
+      url: '/api/v1/trpc',
       /**
        * Allows cookies to send cross-origin
        * See: https://trpc.io/docs/client/cors

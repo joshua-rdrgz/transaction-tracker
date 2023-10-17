@@ -12,6 +12,18 @@ export default defineConfig({
   define: {
     'process.env.SERVER_BASE_URL': JSON.stringify(process.env.SERVER_BASE_URL),
   },
+  server: {
+    host: '0.0.0.0',
+    port: 5173,
+    proxy: {
+      '/api/v1': {
+        target: 'http://api-server:3000/api/v1',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api\/v1/, ''),
+        secure: true,
+      },
+    },
+  },
   plugins: [react(), tsconfigPaths()],
   build: {
     commonjsOptions: {

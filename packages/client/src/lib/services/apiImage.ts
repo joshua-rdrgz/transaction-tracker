@@ -8,7 +8,7 @@ export const uploadAvatarToBucket = async (
   const formData = new FormData();
   formData.append('avatar', file);
 
-  const res = await fetch(`${process.env.SERVER_BASE_URL}/api/v1/avatars`, {
+  const res = await fetch('/api/v1/avatars', {
     method: 'POST',
     body: formData,
   });
@@ -24,7 +24,7 @@ export const uploadAvatarToBucket = async (
 export const deleteAvatarFromBucket = async (key: string) => {
   if (!key) return null;
 
-  const res = await fetch(`${process.env.SERVER_BASE_URL}${key}`, {
+  const res = await fetch(`/api/v1/${key}`, {
     method: 'DELETE',
   });
 
