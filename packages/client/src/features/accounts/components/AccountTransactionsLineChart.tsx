@@ -1,12 +1,12 @@
+import { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { eachDayOfInterval, format, isSameDay, subDays } from 'date-fns';
-import { Prisma } from '@prisma/client';
+import { useTransactions } from '@/features/transactions/hooks/useTransactions';
+import { AreaChartToolTip } from '@/features/accounts/components/AreaChartToolTip';
+import { IRechartsAreaData, ReceivedTransaction } from '@/lib/types';
 import { AreaChart } from '@/ui/area-chart';
 import { Filter } from '@/ui/filter';
-import { useTransactions } from '@/features/transactions/hooks/useTransactions';
 import { Spinner } from '@/ui/spinner';
-import { IRechartsAreaData } from '@/lib/types';
-import { useEffect, useState } from 'react';
 
 interface IAccountTransactionsLineChartProps {
   accountId: string;
@@ -35,11 +35,11 @@ export const AccountTransactionsLineChart: React.FC<IAccountTransactionsLineChar
       });
 
       const data: IRechartsAreaData[] = allDates.map((date) => ({
-        name: format(date, 'MMM dd'),
-        total: getTransactionsOnDate(
-          date,
-          transactions as Exclude<typeof transactions, undefined>
-        ).reduce((acc, transaction) => acc + Number(transaction.amount), 0),
+        xAxisKey: format(date, 'MMM dd'),
+        total: getTransactionsOnDate(date, transactions).reduce(
+          (acc, transaction) => acc + Number(transaction.amount),
+          0
+        ),
       }));
 
       setTransactionsData(data);
@@ -64,14 +64,17 @@ export const AccountTransactionsLineChart: React.FC<IAccountTransactionsLineChar
         ]}
         defaultOptionIndex={2}
       />
-      <AreaChart data={transactionsData || []} />
+      <AreaChart
+        data={transactionsData || []}
+        customToolTip={AreaChartToolTip}
+      />
     </>
   );
 };
 
 function getTransactionsOnDate(
   date: Date,
-  transactions: Prisma.TransactionCreateManyInput[]
+  transactions: ReceivedTransaction[]
 ) {
   return transactions.filter((transaction) =>
     isSameDay(new Date(transaction.date as string | Date), date)

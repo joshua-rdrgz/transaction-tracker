@@ -42,7 +42,7 @@ export interface IRechartsPieData {
 }
 
 export interface IRechartsAreaData {
-  name: string;
+  xAxisKey: string;
   [key: string]: any;
 }
 
