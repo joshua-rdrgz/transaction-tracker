@@ -1,3 +1,6 @@
+/// <reference types="vitest" />
+/// <reference types="vite/client" />
+
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
 import react from '@vitejs/plugin-react';
@@ -38,5 +41,11 @@ export default defineConfig({
   optimizeDeps: {
     entries: ['./node_modules', '../../node_modules'],
     include: ['shared-zod-schemas'],
+  },
+  test: {
+    globals: true,
+    environment: 'jsdom',
+    css: true,
+    setupFiles: './src/test/test-setup.ts',
   },
 });
