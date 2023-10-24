@@ -8,40 +8,48 @@ import {
   Area,
 } from 'recharts';
 import { IRechartsAreaData } from '@/lib/types';
-import { Card, CardContent, CardHeader } from './card';
 import { currency } from '@/lib/utils';
 
 interface IAreaChartProps {
   data: IRechartsAreaData[];
+  customToolTip?(...args: any): JSX.Element | null;
   containerHeight?: number;
+  containerWidth?: number;
 }
+
 export const AreaChart: React.FC<IAreaChartProps> = ({
-  data,
+  data = [],
+  customToolTip: CustomToolTip,
   containerHeight = 250,
+  containerWidth,
 }) => {
   if (data.length === 0)
     return (
       <div
         style={{ height: containerHeight }}
         className='w-full flex justify-center items-center'
+        data-testid='area-chart-empty'
       >
         No data to display.
       </div>
     );
 
   return (
-    <ResponsiveContainer width='100%' height={containerHeight}>
+    <ResponsiveContainer
+      width={containerWidth || '100%'}
+      height={containerHeight}
+    >
       <RechartsAreaChart data={data}>
-        <XAxis dataKey='name' />
+        <XAxis dataKey='xAxisKey' />
         <YAxis
           tickFormatter={
             (value) => currency(+value).slice(0, -3) /* Cut off '.00' */
           }
         />
         <CartesianGrid />
-        <Tooltip content={<CustomToolTip />} />
+        {!!CustomToolTip && <Tooltip content={<CustomToolTip />} />}
         {Object.keys(data[0]).map((areaKey) => {
-          if (areaKey === 'name') return null;
+          if (areaKey === 'xAxisKey') return null;
           return (
             <Area
               key={areaKey}
@@ -55,24 +63,3 @@ export const AreaChart: React.FC<IAreaChartProps> = ({
     </ResponsiveContainer>
   );
 };
-
-function CustomToolTip({ payload }: any) {
-  if (payload.length > 0) {
-    const [
-      {
-        payload: { name, total },
-      },
-    ] = payload;
-
-    return (
-      <Card className='flex flex-col gap-2 p-4'>
-        <CardHeader className='p-0 font-semibold text-md'>{name}</CardHeader>
-        <CardContent className='p-0 font-bold text-lg'>
-          {currency(+total)}
-        </CardContent>
-      </Card>
-    );
-  }
-
-  return null;
-}
