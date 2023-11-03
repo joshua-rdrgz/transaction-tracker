@@ -1,7 +1,7 @@
 {
-  "name": "budgetbook-api-server",
+  "name": "transaction-tracker-server",
   "version": "1.0.0",
-  "description": "Express server for BudgetBook",
+  "description": "Express server for transaction-tracker project",
   "main": "src/index.ts",
   "type": "module",
   "scripts": {
