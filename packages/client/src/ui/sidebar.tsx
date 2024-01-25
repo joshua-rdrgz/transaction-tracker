@@ -1,19 +1,24 @@
 import { NavLink } from 'react-router-dom';
 
 import { Logo } from '@/ui/logo';
-import { Home, PiggyBank, CircleDollarSign, Settings } from 'lucide-react';
+import {
+  // Home,
+  PiggyBank,
+  // CircleDollarSign,
+  Settings,
+} from 'lucide-react';
 
 const NAV_ITEMS = [
-  {
-    label: 'Home',
-    icon: Home,
-    link: '/dashboard',
-  },
-  {
-    label: 'Budget',
-    icon: CircleDollarSign,
-    link: '/budget',
-  },
+  // {
+  //   label: 'Home',
+  //   icon: Home,
+  //   link: '/dashboard',
+  // },
+  // {
+  //   label: 'Budget',
+  //   icon: CircleDollarSign,
+  //   link: '/budget',
+  // },
   {
     label: 'Accounts',
     icon: PiggyBank,

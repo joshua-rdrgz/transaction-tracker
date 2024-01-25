@@ -54,8 +54,8 @@ const router = createBrowserRouter(
           </ProtectedRoute>
         }
       >
-        <Route index element={<Navigate replace to='/dashboard' />} />
-        <Route path='dashboard' element={<div>Dashboard / Home</div>} />
+        <Route index element={<Navigate replace to='/accounts' />} />
+        {/* <Route path='dashboard' element={<div>Dashboard / Home</div>} /> */}
         <Route
           path='accounts'
           loader={accountsPageLoader(queryClient)}
@@ -66,8 +66,8 @@ const router = createBrowserRouter(
           loader={accountPageLoader(queryClient)}
           element={<AccountPage />}
         />
-        <Route path='budget' element={<BudgetOverviewPage />} />
-        <Route path='budget/:monthId' element={<div>Budget (Month)</div>} />
+        {/* <Route path='budget' element={<BudgetOverviewPage />} /> */}
+        {/* <Route path='budget/:monthId' element={<div>Budget (Month)</div>} /> */}
         <Route path='settings' element={<SettingsPage />} />
       </Route>
 
